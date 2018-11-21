@@ -117,6 +117,7 @@ public class Brander {
         BranderDoIt branderDoIt = new BranderDoIt();
          WSServer wsServer = new WSServer(4567);
          wsServer.addListener(branderDoIt);
+         wsServer.start();
         branderDoIt.doIt();
     }
 }
