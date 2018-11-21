@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import com.pi4j.io.gpio.*;
 
-class Interval {
+class Interval { // beschrijft een periode
 
     int day;
     int fromHour;
