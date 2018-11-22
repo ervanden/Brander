@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <body onload="wsconnect();  " > 
+
+        <!--
+        -->
+
+        <style type="text/css">
+            * {font-family:Arial, sans-serif;font-size:12px}
+            input.white {background-color:white}
+            input.green {background-color:green}
+            input.grey {background-color:grey}
+            input.red {background-color:red}
+        </style>
+
+
+        <input type="text" id="serverAddress" name="serverAddress" class="white" value="ws://X.X.X.X:2603">
+
+
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+        <script>
+
+                // figure out ip address or host name to construct WebSocket server URL
+
+                var g_serverAddress = window.location.host.split(":", 1)[0];
+                g_serverAddress = "ws://" + g_serverAddress + ":4567";
+                g_serverAddress = "ws://192.168.0.2:4567";
+                document.getElementById('serverAddress').value=g_serverAddress;
+              
+                var g_ws;
+
+                function wsconnect() {
+
+                    if ("WebSocket" in window)
+                    {
+                        var serverAddress = document.getElementById('serverAddress').value;
+                        g_ws = new WebSocket(serverAddress);
+
+                        g_ws.onopen = function ()
+                        {
+                            document.getElementById("serverAddress").className = "green";
+                            var cmd = new Object();
+                            cmd.Command = "icons";
+                            g_ws.send(JSON.stringify(cmd));
+                        };
+
+                        g_ws.onclose = function (evt)
+                        {
+                            document.getElementById("serverAddress").className = "red";
+                        };
+
+                        g_ws.onerror = function ()
+                        {
+                            document.getElementById("serverAddress").className = "red";
+                        };
+
+                        g_ws.onmessage = function (event)
+                        {
+                            if (event.data.length > 0) {
+                                    console.log("onmessage : " + event.data);
+                            }
+                        };
+
+                    } else
+                    {
+
+                        alert("WebSocket NOT supported by your Browser!");
+                    }
+                }
+
+        </script>
+
+    </body>
+</html>

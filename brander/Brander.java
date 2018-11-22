@@ -25,11 +25,13 @@ class Interval { // beschrijft een periode
 
 class BranderDoIt implements WSServerListener {
 
-    static final boolean ACTIVE = false;
+    static final boolean ACTIVE = true;
     static final boolean PRODUCTION = true;
 
     static GpioController gpio;
     static GpioPinDigitalOutput Gpio3;  // heating
+
+    static public  WSServer wsServer;
 
     List<Interval> intervals = new ArrayList<>();
 
@@ -64,9 +66,11 @@ class BranderDoIt implements WSServerListener {
                 System.out.print("day=" + day + " hour=" + hour + " minute=" + minute);
                 if (interval == null) {
                     System.out.println(" OFF");
+                    wsServer.sendToAll("OFF");
                     state = false;
                 } else {
                     System.out.println(" ON");
+                    wsServer.sendToAll("ON");
                     state = true;
                 }
 
@@ -84,6 +88,8 @@ class BranderDoIt implements WSServerListener {
 
     public ArrayList<String> onClientRequest(String clientID, String request) {
         ArrayList<String> reply = new ArrayList<String>();
+        reply.add(new Date().toString());
+        reply.add("ontvangen door de brander: <"+request+">");
         reply.add("reply van de brander");
         return reply;
     }
@@ -115,9 +121,9 @@ class BranderDoIt implements WSServerListener {
 public class Brander {
     public static void main(String[] args) {
         BranderDoIt branderDoIt = new BranderDoIt();
-         WSServer wsServer = new WSServer(4567);
-         wsServer.addListener(branderDoIt);
-         wsServer.start();
+        BranderDoIt.wsServer = new WSServer(4567);
+        BranderDoIt.wsServer.addListener(branderDoIt);
+        BranderDoIt.wsServer.start();
         branderDoIt.doIt();
     }
 }
