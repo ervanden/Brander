@@ -23,9 +23,9 @@ class Interval { // beschrijft een periode
     }
 }
 
-class BranderDoIt implements WSServerListener {
+class BranderDoIt implements WSServerListener {   // intellij
 
-    static final boolean ACTIVE = true;
+    static final boolean ACTIVE = false;
     static final boolean PRODUCTION = true;
 
     static GpioController gpio;
