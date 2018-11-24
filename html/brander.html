@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <body onload="wsconnect();  " > 
+<body onload="wsconnect();  ">
 
-        <!--
-        -->
+<!--
+-->
 
-        <style type="text/css">
+<style type="text/css">
             * {font-family:Arial, sans-serif;font-size:12px}
             input.white {background-color:white}
             input.green {background-color:green}
             input.grey {background-color:grey}
             input.red {background-color:red}
-        </style>
+            button.redbutton {font-weight: 900;color: rgb(255,0,0); background-color: white; border:none}
+            button.bluebutton {font-weight: 900;color: rgb(0,0,255); background-color: white; border:none}
+            button.unknownbutton {font-weight: 900;color: lightgrey; background-color: white; border:none}
+</style>
 
 
-        <input type="text" id="serverAddress" name="serverAddress" class="white" value="ws://X.X.X.X:2603">
+<input type="text" id="serverAddress" name="serverAddress" class="white" value="ws://X.X.X.X:2603">
+<button type="button" id="statusbutton" class="unknownbutton">STATUS ?</button>
+<span id="statusinfo" class="userinfo"></span>
 
 
-        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
-        <script>
+<script>
 
                 // figure out ip address or host name to construct WebSocket server URL
 
@@ -69,7 +74,9 @@
                     }
                 }
 
-        </script>
 
-    </body>
+
+</script>
+
+</body>
 </html>

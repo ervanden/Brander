@@ -2,7 +2,7 @@ package brander;
 
 import java.util.Date;
 
-public class Main {
+public class Brander {
 
     static int server_verbosity;
     static boolean server_active;
