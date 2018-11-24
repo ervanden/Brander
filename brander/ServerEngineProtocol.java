@@ -13,7 +13,7 @@ public class ServerEngineProtocol implements WSServerListener {
 
     public ArrayList<String> onClientRequest(String clientID, String request) {
         ArrayList<String> reply = new ArrayList<String>();
-        reply.add(new Date().toString()+ "ontvangen door de brander <" + request + ">");
+        reply.add(new Date().toString()+ "   ontvangen door de brander : " + request );
         if (request.equals("GETSTATUS")){
             if (serverEngine.getState()){
                 reply.add("ON");
