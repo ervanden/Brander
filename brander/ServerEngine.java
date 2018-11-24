@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.pi4j.io.gpio.*;
 
-public class ServerEngine implements WSServerListener {   // intellij
+public class ServerEngine {   // intellij
 
     int port;
     int verbosity;
@@ -18,8 +18,7 @@ public class ServerEngine implements WSServerListener {   // intellij
     static GpioController gpio;
     static GpioPinDigitalOutput Gpio3;  // heating
 
-    Boolean state = false;
-    List<Interval> intervals = new ArrayList<>();
+    private Boolean state = false;
 
     public ServerEngine(int port, int verbosity, boolean active, boolean test) {
         this.port = port;
@@ -28,6 +27,9 @@ public class ServerEngine implements WSServerListener {   // intellij
         this.test = test;
     }
 
+    public boolean getState(){
+        return state;
+    }
     private void changeState(boolean newstate) {
         if (state && !newstate) {  // switch off
             state = false;
@@ -50,8 +52,10 @@ public class ServerEngine implements WSServerListener {   // intellij
     public void start() {
 
         wsServer = new WSServer(port);
-        wsServer.addListener(this);
+        wsServer.addListener(new ServerEngineProtocol(this));
         wsServer.start();
+
+        List<Interval> intervals = new ArrayList<>();
 
         if (active) {
             gpio = GpioFactory.getInstance();
@@ -96,13 +100,6 @@ public class ServerEngine implements WSServerListener {   // intellij
         }
     }
 
-    public ArrayList<String> onClientRequest(String clientID, String request) {
-        ArrayList<String> reply = new ArrayList<String>();
-        reply.add(new Date().toString());
-        reply.add("ontvangen door de brander: <" + request + ">");
-        reply.add("reply van de brander");
-        return reply;
-    }
 
     private List<Interval> generateProduction() {
         List<Interval> intervals = new ArrayList<>();
