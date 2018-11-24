@@ -22,6 +22,27 @@ public class ServerEngineProtocol implements WSServerListener {
             }
             return reply;
         }
+
+        if (request.equals("SWITCHOFF")){
+            serverEngine.changeState(false);
+            if (serverEngine.getState()){
+                reply.add("ON");
+            } else {
+                reply.add("OFF");
+            }
+            return reply;
+        }
+
+        if (request.equals("SWITCHON")){
+            serverEngine.changeState(true);
+            if (serverEngine.getState()){
+                reply.add("ON");
+            } else {
+                reply.add("OFF");
+            }
+            return reply;
+        }
+
         return reply;
     }
 }

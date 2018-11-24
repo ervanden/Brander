@@ -30,7 +30,8 @@ public class ServerEngine {   // intellij
     public boolean getState(){
         return state;
     }
-    private void changeState(boolean newstate) {
+
+    public void changeState(boolean newstate) {
         if (state && !newstate) {  // switch off
             state = false;
             wsServer.sendToAll("OFF");
