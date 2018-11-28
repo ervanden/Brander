@@ -19,6 +19,7 @@ public class ServerEngine {   // intellij
     static GpioPinDigitalOutput Gpio3;  // heating
 
     private Boolean state = false;
+    private String forcedState = "";
 
     public ServerEngine(int port, int verbosity, boolean active, boolean test) {
         this.port = port;
@@ -56,8 +57,7 @@ public class ServerEngine {   // intellij
         wsServer.addListener(new ServerEngineProtocol(this));
         wsServer.start();
 
-        List<Interval> intervals = new ArrayList<>();
-
+        List<Interval> intervals ;
         if (active) {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
@@ -79,7 +79,7 @@ public class ServerEngine {   // intellij
                 int minute = c.get(Calendar.MINUTE);
 
                 Interval interval = intervals.stream()
-                        .filter(i -> (i.day == day))
+                        .filter(i -> (i.day==day))
                         .filter(i -> hour * 60 + minute >= i.fromHour * 60 + i.fromMinute)
                         .filter(i -> hour * 60 + minute <= i.tillHour * 60 + i.tillMinute)
                         .findAny().orElse(null);

@@ -4,6 +4,7 @@ package brander;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.framing.Framedata;
@@ -43,7 +44,7 @@ public class WSServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket clientConnection, String request) {
 
-        ArrayList<String> reply;
+        List<String> reply;
         System.out.println("REQUEST FROM CLIENT " + clientConnection + " : " + request);
         reply = listener.onClientRequest(clientConnection.toString(), request);
         for (String r : reply) {

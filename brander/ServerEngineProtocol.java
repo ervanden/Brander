@@ -2,6 +2,7 @@ package brander;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ServerEngineProtocol implements WSServerListener {
 
@@ -11,7 +12,7 @@ public class ServerEngineProtocol implements WSServerListener {
         this.serverEngine = serverEngine;
     }
 
-    public ArrayList<String> onClientRequest(String clientID, String request) {
+    public List<String> onClientRequest(String clientID, String request) {
         ArrayList<String> reply = new ArrayList<String>();
         reply.add(new Date().toString()+ "   ontvangen door de brander : " + request );
         if (request.equals("GETSTATUS")){
