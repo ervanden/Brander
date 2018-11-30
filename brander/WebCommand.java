@@ -3,7 +3,7 @@ package brander;
 public class WebCommand {
     public String command;
     public String arg;
-    public Integer dag;
+    public String dag;
     public Integer vanuur;
     public Integer vanmin;
     public Integer totuur;

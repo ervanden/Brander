@@ -44,9 +44,9 @@ public class Brander {
   //          new ServerEngine(server_port,server_verbosity,server_active, server_test).start();
             ClientSimulator clientSimulator=new ClientSimulator();
 
-            String intervalString=  "{\"command\":\"interval\", \"arg\":\"eerste\",\"dag\":1, \"vanuur\":3, \"vanmin\":15, \"totuur\":15, \"totmin\":35}";
+            String intervalString=  "{\"command\":\"interval\", \"arg\":\"eerste\",\"dag\":\"MAANDAG\", \"vanuur\":3, \"vanmin\":15, \"totuur\":15, \"totmin\":35}";
             clientSimulator.onClientRequest("erik", intervalString);
-            intervalString=  "{\"command\":\"interval\", \"arg\":\"laatste\",\"dag\":1, \"vanuur\":3, \"vanmin\":15, \"totuur\":15, \"totmin\":35}";
+            intervalString=  "{\"command\":\"interval\", \"arg\":\"laatste\",\"dag\":\"21/5/2018\", \"vanuur\":3, \"vanmin\":15, \"totuur\":15, \"totmin\":35}";
             clientSimulator.onClientRequest("erik", intervalString);
         } else  {
             usage();
