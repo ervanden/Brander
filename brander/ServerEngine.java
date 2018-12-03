@@ -78,11 +78,7 @@ public class ServerEngine {   // intellij
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                Interval interval = intervals.stream()
-                        .filter(i -> (i.day==day))
-                        .filter(i -> hour * 60 + minute >= i.fromHour * 60 + i.fromMinute)
-                        .filter(i -> hour * 60 + minute <= i.tillHour * 60 + i.tillMinute)
-                        .findAny().orElse(null);
+                Interval interval = null;
 
                 System.out.print("day=" + day + " hour=" + hour + " minute=" + minute);
                 if (interval == null) {
@@ -104,12 +100,12 @@ public class ServerEngine {   // intellij
 
     private List<Interval> generateProduction() {
         List<Interval> intervals = new ArrayList<>();
-        intervals.add(new Interval(Calendar.MONDAY, 5, 0, 6, 45));
-        intervals.add(new Interval(Calendar.MONDAY, 5, 0, 6, 45));
-        intervals.add(new Interval(Calendar.TUESDAY, 5, 0, 6, 45));
-        intervals.add(new Interval(Calendar.WEDNESDAY, 5, 0, 6, 45));
-        intervals.add(new Interval(Calendar.THURSDAY, 5, 0, 6, 45));
-        intervals.add(new Interval(Calendar.FRIDAY, 5, 0, 6, 45));
+//        intervals.add(new Interval(Calendar.MONDAY, 5, 0, 6, 45));
+//        intervals.add(new Interval(Calendar.MONDAY, 5, 0, 6, 45));
+//        intervals.add(new Interval(Calendar.TUESDAY, 5, 0, 6, 45));
+//        intervals.add(new Interval(Calendar.WEDNESDAY, 5, 0, 6, 45));
+//        intervals.add(new Interval(Calendar.THURSDAY, 5, 0, 6, 45));
+//        intervals.add(new Interval(Calendar.FRIDAY, 5, 0, 6, 45));
         return intervals;
     }
 
@@ -118,7 +114,7 @@ public class ServerEngine {   // intellij
         for (int dd = Calendar.MONDAY; dd <= Calendar.MONDAY + 7; dd++) {
             for (int h = 0; h < 24; h++) {
                 for (int m = 0; m < 60; m = m + 10) {
-                    intervals.add(new Interval(dd, h, m, h, m + 5));
+  //                  intervals.add(new Interval(dd, h, m, h, m + 5));
                 }
             }
         }

@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +23,17 @@ public class ClientSimulator implements WSServerListener {
         System.out.println(cmd.toString());
         Interval interval=null;
         try {
-            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(cmd.dag);
-             interval= new Interval(date,cmd.vanuur,cmd.vanmin,cmd.totuur,cmd.totmin);
-        } catch (ParseException p){
-             interval= new Interval(cmd.dag,cmd.vanuur,cmd.vanmin,cmd.totuur,cmd.totmin);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+            LocalDate date = LocalDate.parse(cmd.dag, formatter);
+            LocalDateTime dt1=date.atTime(cmd.vanuur,cmd.vanmin);
+            LocalDateTime dt2=date.atTime(cmd.totuur,cmd.totmin);
+            interval = new Interval(dt1,dt2);
+        } catch (DateTimeParseException e){
+            LocalDate date = LocalDate.now();
+            LocalDateTime dt1=date.atTime(cmd.vanuur,cmd.vanmin);
+            LocalDateTime dt2=date.atTime(cmd.totuur,cmd.totmin);
+            interval = new Interval(cmd.dag,dt1,dt2);
+
         }
         System.out.println(interval.toString());
 
