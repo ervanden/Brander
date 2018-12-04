@@ -1,5 +1,6 @@
 package brander;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +20,6 @@ public class ServerEngine {   // intellij
     static GpioPinDigitalOutput Gpio3;  // heating
 
     private Boolean state = false;
-    private String forcedState = "";
 
     public ServerEngine(int port, int verbosity, boolean active, boolean test) {
         this.port = port;
@@ -28,7 +28,7 @@ public class ServerEngine {   // intellij
         this.test = test;
     }
 
-    public boolean getState(){
+    public boolean getState() {
         return state;
     }
 
@@ -57,7 +57,7 @@ public class ServerEngine {   // intellij
         wsServer.addListener(new ServerEngineProtocol(this));
         wsServer.start();
 
-        List<Interval> intervals ;
+        List<Interval> intervals;
         if (active) {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
@@ -71,50 +71,46 @@ public class ServerEngine {   // intellij
 
         while (true) {
             try {
-                Date d = new Date();
-                Calendar c = Calendar.getInstance();
-                c.setTime(d);
-                int day = c.get(Calendar.DAY_OF_WEEK);
-                int hour = c.get(Calendar.HOUR_OF_DAY);
-                int minute = c.get(Calendar.MINUTE);
-
-                Interval interval = null;
-
-                System.out.print("day=" + day + " hour=" + hour + " minute=" + minute);
-                if (interval == null) {
-                    System.out.println("  not in ON interval - state is "+state);
-                    changeState(false);
-                } else {
-                    System.out.println("  in ON interval- state is "+state);
-                    changeState(true);
+                LocalDateTime now = LocalDateTime.now();
+                for (Interval interval : intervals) {
+                    if (interval.contains(now)) {
+                        System.out.println("----- now " + now.toString() + " IN " + interval.toString());
+                        // changeState(false);
+                    } else {
+                        System.out.println("now " + now.toString() + " NOT IN " + interval.toString());
+                        // changeState(true);
+                    }
                 }
-
+                System.out.println("---");
                 Thread.sleep(10000);
             } catch (InterruptedException ie) {
             }
-            ;
-
         }
     }
 
-
     private List<Interval> generateProduction() {
         List<Interval> intervals = new ArrayList<>();
-//        intervals.add(new Interval(Calendar.MONDAY, 5, 0, 6, 45));
-//        intervals.add(new Interval(Calendar.MONDAY, 5, 0, 6, 45));
-//        intervals.add(new Interval(Calendar.TUESDAY, 5, 0, 6, 45));
-//        intervals.add(new Interval(Calendar.WEDNESDAY, 5, 0, 6, 45));
-//        intervals.add(new Interval(Calendar.THURSDAY, 5, 0, 6, 45));
-//        intervals.add(new Interval(Calendar.FRIDAY, 5, 0, 6, 45));
+        LocalDateTime van = LocalDateTime.of(2018, 1, 1, 5, 0);
+        LocalDateTime tot = LocalDateTime.of(2018, 1, 1, 6, 45);
+        // of(int year, int month, int dayOfMonth, int hour, int minute)
+        intervals.add(new Interval("MAANDAG", van, tot));
+        intervals.add(new Interval("DINSDAG", van, tot));
+        intervals.add(new Interval("WOENSDAG", van, tot));
+        intervals.add(new Interval("DONDERDAG", van, tot));
+        intervals.add(new Interval("VRIJDAG", van, tot));
         return intervals;
     }
 
+    final String[] WEEKDAGEN = {"MAANDAG", "DINSDAG", "WOENSDAG", "DONDERDAG", "VRIJDAG"};
+
     private List<Interval> generateTest() {
         List<Interval> intervals = new ArrayList<>();
-        for (int dd = Calendar.MONDAY; dd <= Calendar.MONDAY + 7; dd++) {
+        for (String dag : WEEKDAGEN) {
             for (int h = 0; h < 24; h++) {
-                for (int m = 0; m < 60; m = m + 10) {
-  //                  intervals.add(new Interval(dd, h, m, h, m + 5));
+                for (int m = 0; m < 60; m = m + 20) {
+                    LocalDateTime van = LocalDateTime.of(2018, 1, 1, h, m);
+                    LocalDateTime tot = LocalDateTime.of(2018, 1, 1, h, m+1);
+                    intervals.add(new Interval(dag, van, tot));
                 }
             }
         }

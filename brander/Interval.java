@@ -15,11 +15,13 @@ public class Interval {
 
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y H:m");
-        return "VAN " + van.format(formatter) + " TOT " + tot.format(formatter);
+        String dagString = (elkeWeek)? ("("+dag+")") : "";
+        return dagString+"VAN " + van.format(formatter) + " TOT " + tot.format(formatter);
     }
 
     public Interval(LocalDateTime van, LocalDateTime tot) {
         this.elkeWeek = false;
+        this.dag=null;
         this.van = van;
         this.tot = tot;
     }
@@ -36,7 +38,7 @@ public class Interval {
           if (!elkeWeek){
               return d.isAfter(van) && d.isBefore(tot);
           } else {
-              LocalDateTime d1=d.withDayOfYear(d.getDayOfYear());
+              LocalDateTime d1=d.withDayOfYear(van.getDayOfYear());
               return d1.isAfter(van) && d1.isBefore(tot);
           }
         }
