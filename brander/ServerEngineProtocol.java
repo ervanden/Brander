@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ServerEngineProtocol implements WSServerListener {
@@ -30,16 +29,10 @@ public class ServerEngineProtocol implements WSServerListener {
         Interval interval=null;
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
-            LocalDate date = LocalDate.parse(cmd.dag, formatter);
-            LocalDateTime dt1=date.atTime(cmd.vanuur,cmd.vanmin);
-            LocalDateTime dt2=date.atTime(cmd.totuur,cmd.totmin);
-            interval = new Interval(dt1,dt2);
+            LocalDate datum = LocalDate.parse(cmd.dag, formatter);
+            interval = new EenmaligInterval(datum, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
         } catch (DateTimeParseException e){
-            LocalDate date = LocalDate.now();
-            LocalDateTime dt1=date.atTime(cmd.vanuur,cmd.vanmin);
-            LocalDateTime dt2=date.atTime(cmd.totuur,cmd.totmin);
-            interval = new Interval(cmd.dag,dt1,dt2);
-
+            interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
         }
         reply.add(interval.toString());
         return reply;
@@ -47,10 +40,8 @@ public class ServerEngineProtocol implements WSServerListener {
 
 
     public static Object jsonStringToObject(String jsonString, Class<?> valueType) {
-
         Object jsonObject = null;
         ObjectMapper mapper = new ObjectMapper();
-
         try {
             jsonObject = mapper.readValue(jsonString, valueType);
         } catch (JsonGenerationException e) {
@@ -61,6 +52,5 @@ public class ServerEngineProtocol implements WSServerListener {
             e.printStackTrace();
         }
         return jsonObject;
-
     }
 }

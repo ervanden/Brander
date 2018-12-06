@@ -51,18 +51,7 @@ public class Brander {
 //            intervalString = "{\"command\":\"interval\", \"arg\":\"laatste\",\"dag\":\"21/5/2018\", \"vanuur\":3, \"vanmin\":15, \"totuur\":15, \"totmin\":35}";
 //            clientSimulator.onClientRequest("erik", intervalString);
 
-            LocalDateTime van=LocalDateTime.now().plusMinutes(10);
-            LocalDateTime tot=van.plusMinutes(10);
-            Interval interval = new Interval(van,tot);
-            LocalDateTime d=LocalDateTime.now();
-            for (int i = 0; i<30; i++){
-                d=d.plusMinutes(1);
-                if (interval.contains(d)) {
-                    System.out.println("IN " + d.toString() + " " + interval.toString());
-                } else {
-                    System.out.println("OUT " + d.toString() + " " + interval.toString());
-                }
-            }
+
         } else {
             usage();
         }

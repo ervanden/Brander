@@ -2,8 +2,6 @@ package brander;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import com.pi4j.io.gpio.*;
@@ -73,11 +71,11 @@ public class ServerEngine {   // intellij
             try {
                 LocalDateTime now = LocalDateTime.now();
                 for (Interval interval : intervals) {
-                    if (interval.contains(now)) {
+                    if (interval.bevat(now)) {
                         System.out.println("----- now " + now.toString() + " IN " + interval.toString());
                         // changeState(false);
                     } else {
-                        System.out.println("now " + now.toString() + " NOT IN " + interval.toString());
+                        System.out.println("now " + now.toString() + " NIET IN " + interval.toString());
                         // changeState(true);
                     }
                 }
@@ -90,14 +88,11 @@ public class ServerEngine {   // intellij
 
     private List<Interval> generateProduction() {
         List<Interval> intervals = new ArrayList<>();
-        LocalDateTime van = LocalDateTime.of(2018, 1, 1, 5, 0);
-        LocalDateTime tot = LocalDateTime.of(2018, 1, 1, 6, 45);
-        // of(int year, int month, int dayOfMonth, int hour, int minute)
-        intervals.add(new Interval("MAANDAG", van, tot));
-        intervals.add(new Interval("DINSDAG", van, tot));
-        intervals.add(new Interval("WOENSDAG", van, tot));
-        intervals.add(new Interval("DONDERDAG", van, tot));
-        intervals.add(new Interval("VRIJDAG", van, tot));
+        intervals.add(new HerhalendInterval("MAANDAG", 5, 0, 6, 45));
+        intervals.add(new HerhalendInterval("DINSDAG", 5, 0, 6, 45));
+        intervals.add(new HerhalendInterval("WOENSDAG", 5, 0, 6, 45));
+        intervals.add(new HerhalendInterval("DONDERDAG", 5, 0, 6, 45));
+        intervals.add(new HerhalendInterval("VRIJDAG", 5, 0, 6, 45));
         return intervals;
     }
 
@@ -108,9 +103,7 @@ public class ServerEngine {   // intellij
         for (String dag : WEEKDAGEN) {
             for (int h = 0; h < 24; h++) {
                 for (int m = 0; m < 60; m = m + 20) {
-                    LocalDateTime van = LocalDateTime.of(2018, 1, 1, h, m);
-                    LocalDateTime tot = LocalDateTime.of(2018, 1, 1, h, m+1);
-                    intervals.add(new Interval(dag, van, tot));
+                    intervals.add(new HerhalendInterval(dag, h, m, h, m + 10));
                 }
             }
         }
