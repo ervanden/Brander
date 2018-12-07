@@ -26,15 +26,28 @@ public class ServerEngineProtocol implements WSServerListener {
         WebCommand cmd;
         cmd = (WebCommand) jsonStringToObject(request, WebCommand.class);
         System.out.println(cmd.toString());
-        Interval interval=null;
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
-            LocalDate datum = LocalDate.parse(cmd.dag, formatter);
-            interval = new EenmaligInterval(datum, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
-        } catch (DateTimeParseException e){
-            interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
+
+        if (cmd.command.equals("status")) {
+            if (serverEngine.getState()) {
+                reply.add("ON");
+            } else {
+                reply.add("OFF");
+            }
         }
-        reply.add(interval.toString());
+
+        if (cmd.command.equals("interval")) {
+
+            Interval interval = null;
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+                LocalDate datum = LocalDate.parse(cmd.dag, formatter);
+                interval = new EenmaligInterval(datum, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
+            } catch (DateTimeParseException e) {
+                interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
+            }
+            reply.add(interval.toString());
+        }
+
         return reply;
     }
 
