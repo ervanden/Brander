@@ -70,16 +70,7 @@ public class ServerEngine {   // intellij
         while (true) {
             try {
                 LocalDateTime now = LocalDateTime.now();
-                for (Interval interval : intervals) {
-                    if (interval.bevat(now)) {
-                        System.out.println("----- now " + now.toString() + " IN " + interval.toString());
-                        // changeState(false);
-                    } else {
-                        System.out.println("now " + now.toString() + " NIET IN " + interval.toString());
-                        // changeState(true);
-                    }
-                }
-                System.out.println("---");
+                System.out.println("--- " + now);
                 Thread.sleep(10000);
             } catch (InterruptedException ie) {
             }

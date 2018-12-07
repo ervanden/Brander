@@ -42,7 +42,7 @@ public class Brander {
             System.out.println("test=" + server_test);
             System.out.println();
 
-         //            new ServerEngine(server_port,server_verbosity,server_active, server_test).start();
+            new ServerEngine(server_port, server_verbosity, server_active, server_test).start();
 //            ClientSimulator clientSimulator = new ClientSimulator();
 //
 //            String intervalString;
