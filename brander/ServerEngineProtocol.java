@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ import java.util.List;
 public class ServerEngineProtocol implements WSServerListener {
 
     private ServerEngine serverEngine;
+    private IntervalLijst newIntervals;
 
     ServerEngineProtocol(ServerEngine serverEngine) {
         this.serverEngine = serverEngine;
@@ -36,16 +36,24 @@ public class ServerEngineProtocol implements WSServerListener {
         }
 
         if (cmd.command.equals("interval")) {
-
-            Interval interval = null;
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
-                LocalDate datum = LocalDate.parse(cmd.dag, formatter);
-                interval = new EenmaligInterval(datum, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
-            } catch (DateTimeParseException e) {
-                interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
+            if (cmd.arg.equals("reset")) {
+                newIntervals.reset();
             }
-            reply.add(interval.toString());
+            if (cmd.arg.equals("submit")) {
+                serverEngine.intervals = newIntervals;
+            }
+            if (cmd.arg.equals("put")) {
+                Interval interval = null;
+                try {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+                    LocalDate datum = LocalDate.parse(cmd.dag, formatter);
+                    interval = new EenmaligInterval(datum, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
+                } catch (DateTimeParseException e) {
+                    interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
+                }
+                newIntervals.add(interval);
+                reply.add(interval.toString());
+            }
         }
 
         return reply;

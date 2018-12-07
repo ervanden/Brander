@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.pi4j.io.gpio.*;
 
-public class ServerEngine {   // intellij
+public class ServerEngine {
 
     int port;
     int verbosity;
@@ -17,6 +17,7 @@ public class ServerEngine {   // intellij
     static GpioController gpio;
     static GpioPinDigitalOutput Gpio3;  // heating
 
+    public IntervalLijst intervals;
     private Boolean state = false;
 
     public ServerEngine(int port, int verbosity, boolean active, boolean test) {
@@ -51,53 +52,58 @@ public class ServerEngine {   // intellij
 
     public void start() {
 
+        intervals.reset();
         wsServer = new WSServer(port);
         wsServer.addListener(new ServerEngineProtocol(this));
         wsServer.start();
 
-        List<Interval> intervals;
         if (active) {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
 
-        if (test) {
-            intervals = generateTest();
-        } else {
-            intervals = generateProduction();
-        }
+//        if (test) {
+//            intervals = generateTest();
+//        } else {
+//            intervals = generateProduction();
+//        }
 
         while (true) {
             try {
                 LocalDateTime now = LocalDateTime.now();
                 System.out.println("--- " + now);
+                if (intervals.bevat(now)) {
+                    changeState(true);
+                } else {
+                    changeState(false);
+                }
                 Thread.sleep(10000);
             } catch (InterruptedException ie) {
             }
         }
     }
 
-    private List<Interval> generateProduction() {
-        List<Interval> intervals = new ArrayList<>();
-        intervals.add(new HerhalendInterval("MAANDAG", 5, 0, 6, 45));
-        intervals.add(new HerhalendInterval("DINSDAG", 5, 0, 6, 45));
-        intervals.add(new HerhalendInterval("WOENSDAG", 5, 0, 6, 45));
-        intervals.add(new HerhalendInterval("DONDERDAG", 5, 0, 6, 45));
-        intervals.add(new HerhalendInterval("VRIJDAG", 5, 0, 6, 45));
-        return intervals;
-    }
-
-    final String[] WEEKDAGEN = {"MAANDAG", "DINSDAG", "WOENSDAG", "DONDERDAG", "VRIJDAG"};
-
-    private List<Interval> generateTest() {
-        List<Interval> intervals = new ArrayList<>();
-        for (String dag : WEEKDAGEN) {
-            for (int h = 0; h < 24; h++) {
-                for (int m = 0; m < 60; m = m + 20) {
-                    intervals.add(new HerhalendInterval(dag, h, m, h, m + 10));
-                }
-            }
-        }
-        return intervals;
-    }
+//    private IntervalLijst generateProduction() {
+//        IntervalLijst intervals = new ArrayList<>();
+//        intervals.add(new HerhalendInterval("MAANDAG", 5, 0, 6, 45));
+//        intervals.add(new HerhalendInterval("DINSDAG", 5, 0, 6, 45));
+//        intervals.add(new HerhalendInterval("WOENSDAG", 5, 0, 6, 45));
+//        intervals.add(new HerhalendInterval("DONDERDAG", 5, 0, 6, 45));
+//        intervals.add(new HerhalendInterval("VRIJDAG", 5, 0, 6, 45));
+//        return intervals;
+//    }
+//
+//    final String[] WEEKDAGEN = {"MAANDAG", "DINSDAG", "WOENSDAG", "DONDERDAG", "VRIJDAG"};
+//
+//    private List<Interval> generateTest() {
+//        List<Interval> intervals = new ArrayList<>();
+//        for (String dag : WEEKDAGEN) {
+//            for (int h = 0; h < 24; h++) {
+//                for (int m = 0; m < 60; m = m + 20) {
+//                    intervals.add(new HerhalendInterval(dag, h, m, h, m + 10));
+//                }
+//            }
+//        }
+//        return intervals;
+//    }
 }
