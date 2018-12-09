@@ -51,6 +51,7 @@ public class ServerEngineProtocol implements WSServerListener {
             }
             if (cmd.arg.equals("submit")) {
                 serverEngine.intervalLijst = newIntervals;
+                serverEngine.serverEngineThread.interrupt();
             }
             if (cmd.arg.equals("interval")) {
                 Interval interval;
