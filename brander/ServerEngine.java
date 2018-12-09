@@ -63,6 +63,11 @@ public class ServerEngine {
 
     public void start() {
 
+        serverEngineProtocol = new ServerEngineProtocol(this);
+        wsServer = new WSServer(port);
+        wsServer.addListener(serverEngineProtocol);
+        wsServer.start();
+
         LocalDate d = LocalDate.now();
         intervalLijst = new IntervalLijst();
         EenmaligInterval i1 = new EenmaligInterval(d, 0, 0, 23, 59);
@@ -75,10 +80,7 @@ public class ServerEngine {
 
         ServerEngineThread serverEngineThread = new ServerEngineThread();
         serverEngineThread.start();
-        serverEngineProtocol = new ServerEngineProtocol(this);
-        wsServer = new WSServer(port);
-        wsServer.addListener(serverEngineProtocol);
-        wsServer.start();
+
     }
 
     class ServerEngineThread extends Thread {
