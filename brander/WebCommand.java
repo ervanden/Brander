@@ -9,6 +9,18 @@ public class WebCommand {
     public Integer totuur;
     public Integer totmin;
 
+    public WebCommand() {
+
+    }
+
+    public WebCommand(Interval interval) {
+        dag = interval.getDag();
+        vanuur = interval.getVanUur();
+        totuur = interval.getTotUur();
+        totmin = interval.getTotMinuut();
+        vanmin = interval.getVanMinuut();
+    }
+
     public String toString() {
         String s = "";
         s = s + "{\n";
@@ -21,5 +33,17 @@ public class WebCommand {
         s = s + "totmin : " + totmin + "\n";
         s = s + "}";
         return s;
+    }
+
+    public String toJSON() {
+        return "{"
+                + "\"command\":\"" + command + "\","
+                + "\"arg\":\"" + arg + "\","
+                + "\"dag\":\"" + dag + "\","
+                + "\"vanuur\":\"" + vanuur + "\","
+                + "\"vanmin\":\"" + vanmin + "\","
+                + "\"totuur\":\"" + totuur + "\","
+                + "\"totmin\":\"" + totmin + "\""
+                + "}";
     }
 }

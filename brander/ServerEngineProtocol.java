@@ -20,9 +20,9 @@ public class ServerEngineProtocol implements WSServerListener {
         this.serverEngine = serverEngine;
     }
 
-    public List<String> onClientRequest(String  clientID, String request){
+    public List<String> onClientRequest(String clientID, String request) {
         ArrayList<String> reply = new ArrayList<>();
-        System.out.println(clientID+" ontvangt: "+request);
+        System.out.println(clientID + " ontvangt: " + request);
         WebCommand cmd;
         cmd = (WebCommand) jsonStringToObject(request, WebCommand.class);
         System.out.println(cmd.toString());
@@ -35,14 +35,27 @@ public class ServerEngineProtocol implements WSServerListener {
             }
         }
 
-        if (cmd.command.equals("interval")) {
+        if (cmd.command.equals("getSchedule")) {
+            for (Interval interval : serverEngine.intervalLijst.intervals) {
+                WebCommand webCommand = new WebCommand(interval);
+                webCommand.command = "schedule";
+                reply.add(webCommand.toJSON());
+            }
+        }
+        if (cmd.command.equals("putSchedule")) {
             if (cmd.arg.equals("reset")) {
-                newIntervals.reset();
+                newIntervals = new IntervalLijst();
+                WebCommand webCommand = new WebCommand();
+                webCommand.command = "reset OK";
+                reply.add(webCommand.toJSON());
             }
             if (cmd.arg.equals("submit")) {
-                serverEngine.intervals = newIntervals;
+                serverEngine.intervalLijst = newIntervals;
+                WebCommand webCommand = new WebCommand();
+                webCommand.command = "submit OK";
+                reply.add(webCommand.toJSON());
             }
-            if (cmd.arg.equals("put")) {
+            if (cmd.arg.equals("interval")) {
                 Interval interval = null;
                 try {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
@@ -52,7 +65,7 @@ public class ServerEngineProtocol implements WSServerListener {
                     interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
                 }
                 newIntervals.add(interval);
-                reply.add(interval.toString());
+                reply.add("putSchedule interval OK: " + interval.toString());
             }
         }
 

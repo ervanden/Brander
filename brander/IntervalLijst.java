@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IntervalLijst {
-    private List<Interval> intervals = new ArrayList<Interval>();
+    public List<Interval> intervals = new ArrayList<Interval>();
 
     public void reset() {
         intervals = new ArrayList<Interval>();

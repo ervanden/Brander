@@ -26,28 +26,52 @@ public class HerhalendInterval extends TijdsInterval implements Interval {
         return this.bevat(uur, minuut) && dag == dtdag;
     }
 
+    public String getDag() {
+        return dag.toString();
+    }
+
+    @Override
+    public int getVanUur() {
+        return vanUur;
+    }
+
+    @Override
+    public int getTotUur() {
+        return totUur;
+    }
+
+    @Override
+    public int getVanMinuut() {
+        return vanMinuut;
+    }
+
+    @Override
+    public int getTotMinuut() {
+        return totMinuut;
+    }
+
     public static DayOfWeek toDayOfWeek(String dayName) {
         DayOfWeek day;
-        switch (dayName.toLowerCase()) {
-            case "maandag":
+        switch (dayName) {
+            case "MONDAY":
                 day = DayOfWeek.MONDAY;
                 break;
-            case "dinsdag":
+            case "TUESDAY":
                 day = DayOfWeek.TUESDAY;
                 break;
-            case "woensdag":
+            case "WEDNESDAY":
                 day = DayOfWeek.WEDNESDAY;
                 break;
-            case "donderdag":
+            case "THURSDAY":
                 day = DayOfWeek.THURSDAY;
                 break;
-            case "vrijdag":
+            case "FRIDAY":
                 day = DayOfWeek.FRIDAY;
                 break;
-            case "zaterdag":
+            case "SATURDAY":
                 day = DayOfWeek.SATURDAY;
                 break;
-            case "zondag":
+            case "SUNDAY":
                 day = DayOfWeek.SUNDAY;
                 break;
             default:

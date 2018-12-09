@@ -1,7 +1,8 @@
 package brander;
 
+import java.text.DateFormatSymbols;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.pi4j.io.gpio.*;
@@ -13,11 +14,12 @@ public class ServerEngine {
     boolean active;
     boolean test;
     WSServer wsServer;
+    ServerEngineProtocol serverEngineProtocol;
 
     static GpioController gpio;
     static GpioPinDigitalOutput Gpio3;  // heating
 
-    public IntervalLijst intervals;
+    public IntervalLijst intervalLijst;
     private Boolean state = false;
 
     public ServerEngine(int port, int verbosity, boolean active, boolean test) {
@@ -52,27 +54,70 @@ public class ServerEngine {
 
     public void start() {
 
-        intervals.reset();
+        LocalDate d = LocalDate.now();
+        intervalLijst = new IntervalLijst();
+        EenmaligInterval i1 = new EenmaligInterval(d, 0, 0, 23, 59);
+        intervalLijst.add(i1);
+
+        serverEngineProtocol = new ServerEngineProtocol(this);
         wsServer = new WSServer(port);
-        wsServer.addListener(new ServerEngineProtocol(this));
+        wsServer.addListener(serverEngineProtocol);
         wsServer.start();
+
+        /*
+        WebCommand webCommand = new WebCommand();
+        webCommand.command = "getSchedule";
+        List<String> reply = serverEngineProtocol.onClientRequest("clientID", webCommand.toJSON());
+        for (String s : reply) {
+            System.out.println("REPLY: " + s);
+        }
+        webCommand = new WebCommand();
+        webCommand.command = "putSchedule";
+        webCommand.arg = "reset";
+        reply = serverEngineProtocol.onClientRequest("clientID", webCommand.toJSON());
+        for (String s : reply) {
+            System.out.println("REPLY: " + s);
+        }
+        DateFormatSymbols dfs = new DateFormatSymbols();
+
+        String[] weekdays = dfs.getWeekdays();
+        for (String weekdag : weekdays) {
+            if (!weekdag.isEmpty()) {
+                HerhalendInterval i4 = new HerhalendInterval(weekdag.toUpperCase(), 10, 0, 15, 10);
+                webCommand = new WebCommand(i4);
+                webCommand.command = "putSchedule";
+                webCommand.arg = "interval";
+                reply = serverEngineProtocol.onClientRequest("clientID", webCommand.toJSON());
+                for (String s : reply) {
+                    System.out.println("REPLY: " + s);
+                }
+            }
+        }
+        webCommand.command = "putSchedule";
+        webCommand.arg = "submit";
+        reply = serverEngineProtocol.onClientRequest("clientID", webCommand.toJSON());
+        for (String s : reply) {
+            System.out.println("REPLY: " + s);
+        }
+        webCommand = new WebCommand();
+        webCommand.command = "getSchedule";
+        reply = serverEngineProtocol.onClientRequest("clientID", webCommand.toJSON());
+        for (String s : reply) {
+            System.out.println("REPLY: " + s);
+        }
+*/
 
         if (active) {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
 
-//        if (test) {
-//            intervals = generateTest();
-//        } else {
-//            intervals = generateProduction();
-//        }
 
         while (true) {
             try {
                 LocalDateTime now = LocalDateTime.now();
                 System.out.println("--- " + now);
-                if (intervals.bevat(now)) {
+                if (intervalLijst.bevat(now)) {
                     changeState(true);
                 } else {
                     changeState(false);
@@ -82,28 +127,4 @@ public class ServerEngine {
             }
         }
     }
-
-//    private IntervalLijst generateProduction() {
-//        IntervalLijst intervals = new ArrayList<>();
-//        intervals.add(new HerhalendInterval("MAANDAG", 5, 0, 6, 45));
-//        intervals.add(new HerhalendInterval("DINSDAG", 5, 0, 6, 45));
-//        intervals.add(new HerhalendInterval("WOENSDAG", 5, 0, 6, 45));
-//        intervals.add(new HerhalendInterval("DONDERDAG", 5, 0, 6, 45));
-//        intervals.add(new HerhalendInterval("VRIJDAG", 5, 0, 6, 45));
-//        return intervals;
-//    }
-//
-//    final String[] WEEKDAGEN = {"MAANDAG", "DINSDAG", "WOENSDAG", "DONDERDAG", "VRIJDAG"};
-//
-//    private List<Interval> generateTest() {
-//        List<Interval> intervals = new ArrayList<>();
-//        for (String dag : WEEKDAGEN) {
-//            for (int h = 0; h < 24; h++) {
-//                for (int m = 0; m < 60; m = m + 20) {
-//                    intervals.add(new HerhalendInterval(dag, h, m, h, m + 10));
-//                }
-//            }
-//        }
-//        return intervals;
-//    }
 }
