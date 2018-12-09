@@ -48,15 +48,9 @@ public class ServerEngineProtocol implements WSServerListener {
         if (cmd.command.equals("putSchedule")) {
             if (cmd.arg.equals("reset")) {
                 newIntervals = new IntervalLijst();
-                WebCommand webCommand = new WebCommand();
-                webCommand.command = "reset OK";
-                reply.add(webCommand.toJSON());
             }
             if (cmd.arg.equals("submit")) {
                 serverEngine.intervalLijst = newIntervals;
-                WebCommand webCommand = new WebCommand();
-                webCommand.command = "submit OK";
-                reply.add(webCommand.toJSON());
             }
             if (cmd.arg.equals("interval")) {
                 Interval interval = null;
@@ -68,7 +62,6 @@ public class ServerEngineProtocol implements WSServerListener {
                     interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
                 }
                 newIntervals.add(interval);
-                reply.add("putSchedule interval OK: " + interval.toString());
             }
         }
 
