@@ -27,12 +27,15 @@ public class ServerEngineProtocol implements WSServerListener {
         cmd = (WebCommand) jsonStringToObject(request, WebCommand.class);
         System.out.println(cmd.toString());
 
-        if (cmd.command.equals("status")) {
+        if (cmd.command.equals("getStatus")) {
+            WebCommand webCommand = new WebCommand();
+            webCommand.command = "status";
             if (serverEngine.getState()) {
-                reply.add("ON");
+                webCommand.arg = "ON";
             } else {
-                reply.add("OFF");
+                webCommand.arg = "OFF";
             }
+            reply.add(webCommand.toJSON());
         }
 
         if (cmd.command.equals("getSchedule")) {
