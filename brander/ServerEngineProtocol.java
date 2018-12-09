@@ -53,7 +53,7 @@ public class ServerEngineProtocol implements WSServerListener {
                 serverEngine.intervalLijst = newIntervals;
             }
             if (cmd.arg.equals("interval")) {
-                Interval interval = null;
+                Interval interval;
                 try {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
                     LocalDate datum = LocalDate.parse(cmd.dag, formatter);

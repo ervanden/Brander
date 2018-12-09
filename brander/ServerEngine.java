@@ -36,7 +36,11 @@ public class ServerEngine {
     public void changeState(boolean newstate) {
         if (state && !newstate) {  // switch off
             state = false;
-            wsServer.sendToAll("OFF");
+            System.out.println("Changing state to OFF");
+            WebCommand webCommand = new WebCommand();
+            webCommand.command = "status";
+            webCommand.arg = "OFF";
+            wsServer.sendToAll(webCommand.toJSON());
             if (active) {
                 System.out.println("GPIO 3 (heating) set to " + state);
                 Gpio3.setState(state);
@@ -44,12 +48,16 @@ public class ServerEngine {
         } else if (!state && newstate) { // switch on
             state = true;
             System.out.println("Changing state to ON");
-            wsServer.sendToAll("ON");
+            WebCommand webCommand = new WebCommand();
+            webCommand.command = "status";
+            webCommand.arg = "ON";
+            wsServer.sendToAll(webCommand.toJSON());
             if (active) {
                 System.out.println("GPIO 3 (heating) set to " + state);
                 Gpio3.setState(state);
             }
         }
+
     }
 
     public void start() {
