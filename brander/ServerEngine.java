@@ -78,7 +78,7 @@ public class ServerEngine {
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
 
-        ServerEngineThread serverEngineThread = new ServerEngineThread();
+        serverEngineThread = new ServerEngineThread();
         serverEngineThread.start();
 
     }

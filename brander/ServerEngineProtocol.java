@@ -84,4 +84,13 @@ public class ServerEngineProtocol implements WSServerListener {
         }
         return jsonObject;
     }
+
+    private void saveSchedule() {
+        List<Object> l = new ArrayList<>();
+        for (Interval interval : serverEngine.intervalLijst.intervals) {
+            l.add(interval);
+        }
+        String scheduleFileName = "/home/pi/Brander.json";
+        JSON2Object.writeJSONFile(scheduleFileName, l);
+    }
 }

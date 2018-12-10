@@ -23,6 +23,7 @@
 <table id="schedule">
 </table>
 </div>
+<button type="button" id="submitbutton" class="submitbutton">SUBMIT</button>
 <span id="statusinfo" class="userinfo"></span>
 <div id="logdiv" </div>
 
@@ -34,28 +35,38 @@
 
 
 var now=new Date();
-var vandaag=now.getDate()+"/"+now.getMonth()+"/"+now.getFullYear();
-g_dagen = ["MAANDAG","DINSDAG","WOENSDAG","DONDERDAG","VRIJDAG","ZATERDAG","ZONDAG",vandaag];
+var vandaag=now.getDate()+"/"+(now.getMonth()+1)+"/"+now.getFullYear();
+g_dagen = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY",vandaag];
 
 function setStatus(status){
-g_status=status;
+g_statusbutton.data=status;
 document.getElementById("statusbutton").className=status;
-document.getElementById("statusbutton").innerHTML=g_button.data;
+document.getElementById("statusbutton").innerHTML=g_statusbutton.data;
 }
 
 document.getElementById("statusbutton").onclick = function (){
- if (g_status=="ON") {
-  g_ws.send("SWITCHOFF");
-  g_button.data="UNKNOWN";
-  setStatus("UNKNOWN");
- } else if (g_status=="OFF") {
-  g_ws.send("SWITCHON");
-  g_button.data="UNKNOWN";
-  setStatus("UNKNOWN");
- } else {  // unknown
-  g_button.data="UNKNOWN";
-  g_ws.send("GETSTATUS");
- }
+  var command={};
+  command.command="getStatus";
+  g_ws.send(JSON.stringify(command));
+}
+
+document.getElementById("submitbutton").onclick = function (){
+var command={};
+command.command="putSchedule";
+command.arg="reset";
+g_ws.send(JSON.stringify(command));
+
+for (var i = 0; i < g_table.childNodes.length ; i++) {
+  console.log(g_table.childNodes[i].data);
+  command=g_table.childNodes[i].data;
+  command.command="putSchedule";
+  command.arg="interval";
+  g_ws.send(JSON.stringify(command));
+}
+var command={};
+command.command="putSchedule";
+command.arg="submit";
+g_ws.send(JSON.stringify(command));
 }
 
 function addInterval(data){
@@ -96,13 +107,25 @@ function addInterval(data){
   row.appendChild(td);
   select_dag = document.createElement('select');
   td.appendChild(select_dag);
+  var selectedOption=false;
   for (var i = 0; i<g_dagen.length; i++){
     var opt = document.createElement('option');
     select_dag.appendChild(opt);
     opt.value = g_dagen[i];
     opt.innerHTML = g_dagen[i];
-    if (g_dagen[i]==row.data.dag) opt.selected=true;
+    if (g_dagen[i]==row.data.dag) {
+      opt.selected=true;
+      selectedOption=true;
+    }
   }
+  if (!selectedOption) { // geen weekdag en niet vandaag : dus een andere dag
+    var opt = document.createElement('option');
+    select_dag.appendChild(opt);
+    opt.value = row.data.dag;
+    opt.innerHTML = row.data.dag;
+    opt.selected=true;
+  }
+
   select_dag.onchange = function() {
     row.data.dag=select_dag.value;
     console.log(row.data);
@@ -198,6 +221,7 @@ function addInterval(data){
   }
 }
 
+
                 // figure out ip address or host name to construct WebSocket server URL
 
                 var g_serverAddress = window.location.host.split(":", 1)[0];
@@ -205,51 +229,53 @@ function addInterval(data){
                 document.getElementById('serverAddress').value=g_serverAddress;
               
                 var g_ws;
-                var g_button=document.getElementById("statusbutton");
+                var g_statusbutton=document.getElementById("statusbutton");
                 var g_table=document.getElementById("schedule");
-                var g_status = "UNKNOWN";
 
-addInterval({ "dag":"MAANDAG" ,"vanuur":5,"vanmin":45,"totuur":7,"totmin":0});
-addInterval({ "dag":"DINSDAG" ,"vanuur":5,"vanmin":45,"totuur":7,"totmin":0});
 
                 function wsconnect() {
 
-                    if ("WebSocket" in window)
-                    {
+                    if ("WebSocket" in window) {
                         var serverAddress = document.getElementById('serverAddress').value;
                         g_ws = new WebSocket(serverAddress);
 
-                        g_ws.onopen = function ()
-                        {
+                        g_ws.onopen = function () {
                             document.getElementById("serverAddress").className = "green";
-                            g_ws.send("GETSTATUS");
+                            var msg={};
+                            msg.command="getSchedule";
+                            g_ws.send(JSON.stringify(msg));
+                            msg.command="getStatus";
+                            g_ws.send(JSON.stringify(msg));
                         };
 
-                        g_ws.onclose = function (evt)
-                        {
+                        g_ws.onclose = function (evt) {
                             document.getElementById("serverAddress").className = "red";
                         };
 
-                        g_ws.onerror = function ()
-                        {
+                        g_ws.onerror = function () {
                             document.getElementById("serverAddress").className = "red";
                         };
 
-                        g_ws.onmessage = function (event)
-                        {
+                        g_ws.onmessage = function (event) {
                             if (event.data.length > 0) {
-                              console.log("onmessage : " + event.data);
-                              document.getElementById("logdiv").innerHTML += event.data +"<br>\n";
-                            }
-                            var message=event.data;
-                            if (message=="ON") {
-                              g_button.data=message;
-                              setStatus(message);
-                            }
-                            if (message=="OFF") {
-                              g_button.data=message;
-                              setStatus(message);
-                            }
+                                try {
+                                    var obj = JSON.parse(event.data);
+                                } catch (e) {
+                                    console.log("JSON.parse failed on : " + event.data);
+
+                                }
+                                if (typeof obj !== "undefined") {
+                                   console.log("received command : " + obj);
+                                   console.log(obj);
+                                   if (obj.command=="schedule"){
+                                      addInterval(obj);
+                                   }
+                                   if (obj.command=="status"){
+
+                                      setStatus(obj.arg);
+                                   }
+                                }
+                           }
                         }
                     } else {
                         alert("WebSocket NOT supported by your Browser!");
