@@ -119,6 +119,7 @@ public class JSON2Object {
                 for (Object someObject : objects) {
                     //                   System.out.println(":::object " + someObject.getClass().getName());
                     outputStream.write("{");
+                    System.out.println("{");
                     String separator = "";
                     for (Field field : someObject.getClass().getDeclaredFields()) {
                         field.setAccessible(true); // You might want to set modifier to public first.
@@ -128,8 +129,10 @@ public class JSON2Object {
                             if (value != null) {
                                 if (field.getType().getName().equals("java.lang.String")) {
                                     outputStream.write(separator + "\n\"" + field.getName() + "\":\"" + value + "\"");
+                                    System.out.println(separator + "\n\"" + field.getName() + "\":\"" + value + "\"");
                                 } else if (field.getType().getName().equals("java.lang.Integer")) { // no quotes
                                     outputStream.write(separator + "\n\"" + field.getName() + "\":" + value + "");
+                                    System.out.println(separator + "\n\"" + field.getName() + "\":" + value + "");
                                 } else {
                                     System.out.println("Field type not implemented in JSON2Object class:" + field.getType().getName());
                                 }
@@ -139,6 +142,7 @@ public class JSON2Object {
                         }
                     }
                     outputStream.write("\n}\n");
+                    System.out.println("\n}\n");
                 }
                 outputStream.close();
 
