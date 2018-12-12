@@ -133,6 +133,9 @@ public class JSON2Object {
                                 } else if (field.getType().getName().equals("java.lang.Integer")) { // no quotes
                                     outputStream.write(separator + "\n\"" + field.getName() + "\":" + value + "");
                                     System.out.println(separator + "\n\"" + field.getName() + "\":" + value + "");
+                                } else if (field.getType().getName().equals("java.time.LocalDate")) { // no quotes
+                                    outputStream.write(separator + "\n\"" + field.getName() + "\":" + value + "");
+                                    System.out.println(separator + "\n\"" + field.getName() + "\":" + value + "");
                                 } else {
                                     System.out.println("Field type not implemented in JSON2Object class:" + field.getType().getName());
                                 }

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.*;
 import java.time.format.DateTimeParseException;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -54,6 +54,8 @@ public class ServerEngineProtocol implements WSServerListener {
             if (cmd.arg.equals("submit")) {
                 serverEngine.intervalLijst = newIntervals;
                 serverEngine.serverEngineThread.interrupt();
+                String scheduleFileName = "/home/pi/Brander.json";
+                writeJSONFile(scheduleFileName, serverEngine.intervalLijst.intervals);
             }
             if (cmd.arg.equals("interval")) {
                 Interval interval;
@@ -87,12 +89,35 @@ public class ServerEngineProtocol implements WSServerListener {
         return jsonObject;
     }
 
-    private void saveSchedule() {
-        List<Object> l = new ArrayList<>();
-        for (Interval interval : serverEngine.intervalLijst.intervals) {
-            l.add(interval);
+
+    public static void writeJSONFile(String fileName, List<Interval> intervals) {
+        try {
+            File initialFile = new File(fileName);
+            OutputStream is = new FileOutputStream(initialFile);
+            OutputStreamWriter isr = new OutputStreamWriter(is, "UTF-8");
+            BufferedWriter outputStream = new BufferedWriter(isr);
+
+            for (Interval interval : intervals) {
+                System.out.println("{ "
+                        + "\"" + "dag" + "\"" + ":" + "\"" + interval.getDag() + "\", "
+                        + "\"" + "vanuur" + "\"" + ":" + interval.getVanUur() + ", "
+                        + "\"" + "vanmin" + "\"" + ":" + interval.getVanMinuut() + ", "
+                        + "\"" + "totuur" + "\"" + ":" + interval.getTotUur() + ", "
+                        + "\"" + "totmin" + "\"" + ":" + interval.getTotMinuut()
+                        + "}"
+                );
+                outputStream.write("{ "
+                        + "\"" + "dag" + "\"" + ":" + "\"" + interval.getDag() + "\", "
+                        + "\"" + "vanuur" + "\"" + ":" + interval.getVanUur() + ", "
+                        + "\"" + "vanmin" + "\"" + ":" + interval.getVanMinuut() + ", "
+                        + "\"" + "totuur" + "\"" + ":" + interval.getTotUur() + ", "
+                        + "\"" + "totmin" + "\"" + ":" + interval.getTotMinuut()
+                        + "}\r\n"
+                );
+            }
+            outputStream.close();
+        } catch (IOException io) {
+            System.out.println("io exception");
         }
-        String scheduleFileName = "/home/pi/Brander.json";
-        JSON2Object.writeJSONFile(scheduleFileName, l);
     }
 }
