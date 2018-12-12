@@ -14,18 +14,23 @@
             button.ON {font-weight: 900;color: rgb(255,0,0); background-color: white; border:none}
             button.OFF {font-weight: 900;color: rgb(0,0,255); background-color: white; border:none}
             button.UNKNOWN {font-weight: 900;color: lightgrey; background-color: white; border:none}
+
+
+
 </style>
 
 
 <input type="text" id="serverAddress" name="serverAddress" class="white" value="ws://X.X.X.X:2603">
 <button type="button" id="statusbutton" class="unknownbutton">STATUS ?</button>
 <div id="tablediv">
-<table id="schedule">
-</table>
+    <table id="schedule">
+    </table>
 </div>
+<button type="button" id="addbutton" class="addbutton">ADD</button>
 <button type="button" id="submitbutton" class="submitbutton">SUBMIT</button>
 <span id="statusinfo" class="userinfo"></span>
-<div id="logdiv" </div>
+<div id="logdiv"
+</div>
 
 
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -44,29 +49,45 @@ document.getElementById("statusbutton").className=status;
 document.getElementById("statusbutton").innerHTML=g_statusbutton.data;
 }
 
+function sendBrander(msg){
+  console.log("sending: "+msg);
+  g_ws.send(msg);
+}
+
 document.getElementById("statusbutton").onclick = function (){
   var command={};
   command.command="getStatus";
-  g_ws.send(JSON.stringify(command));
+  sendBrander(JSON.stringify(command));
+}
+
+document.getElementById("addbutton").onclick = function (){
+var interval={};
+interval.dag=vandaag;
+interval.vanuur=0;
+interval.vanmin=0;
+interval.totuur=23;
+interval.totmin=55;
+addInterval(interval);
 }
 
 document.getElementById("submitbutton").onclick = function (){
 var command={};
 command.command="putSchedule";
 command.arg="reset";
-g_ws.send(JSON.stringify(command));
+sendBrander(JSON.stringify(command));
 
 for (var i = 0; i < g_table.childNodes.length ; i++) {
-  console.log(g_table.childNodes[i].data);
-  command=g_table.childNodes[i].data;
-  command.command="putSchedule";
-  command.arg="interval";
-  g_ws.send(JSON.stringify(command));
+  if (g_table.childNodes[i].nodeType==1) { // only element nodes
+    command=g_table.childNodes[i].data;
+    command.command="putSchedule";
+    command.arg="interval";
+    sendBrander(JSON.stringify(command));
+  }
 }
 var command={};
 command.command="putSchedule";
 command.arg="submit";
-g_ws.send(JSON.stringify(command));
+sendBrander(JSON.stringify(command));
 }
 
 function addInterval(data){
@@ -128,7 +149,6 @@ function addInterval(data){
 
   select_dag.onchange = function() {
     row.data.dag=select_dag.value;
-    console.log(row.data);
   }
 
   // 
@@ -150,7 +170,6 @@ function addInterval(data){
   }
   select_vanuur.onchange = function() {
     row.data.vanuur=select_vanuur.value;
-    console.log(row.data);
   }
 
   // :
@@ -172,7 +191,6 @@ function addInterval(data){
   }
   select_vanmin.onchange = function() {
     row.data.vanmin=select_vanmin.value;
-    console.log(row.data);
   }
 
   // 
@@ -195,7 +213,6 @@ function addInterval(data){
   }
   select_totuur.onchange = function() {
     row.data.totuur=select_totuur.value;
-    console.log(row.data);
   }
 
   // :
@@ -217,7 +234,6 @@ function addInterval(data){
   }
   select_totmin.onchange = function() {
     row.data.totmin=select_totmin.value;
-    console.log(row.data);
   }
 }
 
@@ -225,7 +241,7 @@ function addInterval(data){
                 // figure out ip address or host name to construct WebSocket server URL
 
                 var g_serverAddress = window.location.host.split(":", 1)[0];
-                g_serverAddress = "ws://" + g_serverAddress + ":4567";
+                g_serverAddress = "ws://" + g_serverAddress + ":4568";
                 document.getElementById('serverAddress').value=g_serverAddress;
               
                 var g_ws;
@@ -243,9 +259,9 @@ function addInterval(data){
                             document.getElementById("serverAddress").className = "green";
                             var msg={};
                             msg.command="getSchedule";
-                            g_ws.send(JSON.stringify(msg));
+                            sendBrander(JSON.stringify(msg));
                             msg.command="getStatus";
-                            g_ws.send(JSON.stringify(msg));
+                            sendBrander(JSON.stringify(msg));
                         };
 
                         g_ws.onclose = function (evt) {
@@ -281,6 +297,9 @@ function addInterval(data){
                         alert("WebSocket NOT supported by your Browser!");
                     }
                 }
+
+
+
 
 
 
