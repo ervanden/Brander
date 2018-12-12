@@ -103,58 +103,7 @@ public class JSON2Object {
             e.printStackTrace();
         }
         return jsonObject;
-
     }
 
-    public static void writeJSONFile(String fileName, List<Object> objects) {
-
-        {
-            try {
-
-                File initialFile = new File(fileName);
-                OutputStream is = new FileOutputStream(initialFile);
-                OutputStreamWriter isr = new OutputStreamWriter(is, "UTF-8");
-                BufferedWriter outputStream = new BufferedWriter(isr);
-
-                for (Object someObject : objects) {
-                    //                   System.out.println(":::object " + someObject.getClass().getName());
-                    outputStream.write("{");
-                    System.out.println("{");
-                    String separator = "";
-                    for (Field field : someObject.getClass().getDeclaredFields()) {
-                        field.setAccessible(true); // You might want to set modifier to public first.
-                        try {
-//                            System.out.println(":::field " + field.getName());
-                            Object value = field.get(someObject);
-                            if (value != null) {
-                                if (field.getType().getName().equals("java.lang.String")) {
-                                    outputStream.write(separator + "\n\"" + field.getName() + "\":\"" + value + "\"");
-                                    System.out.println(separator + "\n\"" + field.getName() + "\":\"" + value + "\"");
-                                } else if (field.getType().getName().equals("java.lang.Integer")) { // no quotes
-                                    outputStream.write(separator + "\n\"" + field.getName() + "\":" + value + "");
-                                    System.out.println(separator + "\n\"" + field.getName() + "\":" + value + "");
-                                } else if (field.getType().getName().equals("java.time.LocalDate")) { // no quotes
-                                    outputStream.write(separator + "\n\"" + field.getName() + "\":" + value + "");
-                                    System.out.println(separator + "\n\"" + field.getName() + "\":" + value + "");
-                                } else {
-                                    System.out.println("Field type not implemented in JSON2Object class:" + field.getType().getName());
-                                }
-                                separator = ",";
-                            }
-                        } catch (IllegalAccessException iae) {
-                        }
-                    }
-                    outputStream.write("\n}\n");
-                    System.out.println("\n}\n");
-                }
-                outputStream.close();
-
-            } catch (IOException io) {
-                System.out.println("io exception");
-            }
-
-        }
-
-    }
 }
 
