@@ -21,7 +21,7 @@ public class ServerEngine {
     static GpioController gpio;
     static GpioPinDigitalOutput Gpio3;  // heating
 
-    public IntervalLijst intervalLijst;
+    public IntervalLijst intervalLijst = new IntervalLijst();
     private Boolean state = false;
 
     public ServerEngine(int port, int verbosity, boolean active, boolean test) {

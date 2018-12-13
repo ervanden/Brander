@@ -5,10 +5,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
-import java.time.format.DateTimeParseException;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +14,7 @@ public class ServerEngineProtocol implements WSServerListener {
     private ServerEngine serverEngine;
     private IntervalLijst newIntervals;
     final String scheduleFileName = "/home/pi/Brander.json";
-
+    //  final String scheduleFileName = "C:\\Users\\erikv\\Downloads\\bbb.txt";
 
     ServerEngineProtocol(ServerEngine serverEngine) {
         this.serverEngine = serverEngine;
