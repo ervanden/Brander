@@ -10,6 +10,8 @@ public class Brander {
     static boolean server_active;
     static int server_port;
     static boolean server_test;
+    final static String scheduleFileName = "/home/pi/Brander.json";
+
 
     private static void usage() {
         System.out.println("Usage :");

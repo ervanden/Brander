@@ -62,11 +62,11 @@ public class ServerEngine {
     }
 
     public void start() {
-        // start de scheduling al zelfs al is de json file nog niet gelezen.
+
+        readJSONFile(Brander.scheduleFileName);
         serverEngineThread = new ServerEngineThread();
         serverEngineThread.start();
-        // json  file wordt nu gelezen en interrupt de serverEngineThread.
-        // daarom moet die eerst gestart worden
+
         serverEngineProtocol = new ServerEngineProtocol(this);
         wsServer = new WSServer(port);
         wsServer.addListener(serverEngineProtocol);
@@ -81,6 +81,22 @@ public class ServerEngine {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
+        serverEngineThread = new ServerEngineThread();
+        serverEngineThread.start();
+
+    }
+
+    public void readJSONFile(String fileName) {
+        ArrayList<Object> l;
+        l = JSON2Object.readJSONFile(fileName, WebCommand.class);
+        IntervalLijst newIntervals = new IntervalLijst();
+        for (Object o : l) {
+            WebCommand webCommand = (WebCommand) o;
+            System.out.println(" read from json file " + webCommand.toString());
+            System.out.println("   converted to interval " + webCommand.toInterval().toString());
+            newIntervals.add(webCommand.toInterval());
+        }
+        intervalLijst = newIntervals;
     }
 
     class ServerEngineThread extends Thread {
@@ -96,6 +112,8 @@ public class ServerEngine {
                     }
                     Thread.sleep(10000);
                 } catch (InterruptedException ie) {
+                    // bij het veranderen van de IntervalLijst (vanuit de web client) interrupten
+                    // we de sleep zodat de toestand direct geevalueerd wordt
                     System.out.println("server engine interrrupted!!!");
                 }
             }

@@ -13,12 +13,9 @@ public class ServerEngineProtocol implements WSServerListener {
 
     private ServerEngine serverEngine;
     private IntervalLijst newIntervals;
-    final String scheduleFileName = "/home/pi/Brander.json";
-    //  final String scheduleFileName = "C:\\Users\\erikv\\Downloads\\bbb.txt";
 
     ServerEngineProtocol(ServerEngine serverEngine) {
         this.serverEngine = serverEngine;
-        readJSONFile(scheduleFileName);
     }
 
     public List<String> onClientRequest(String clientID, String request) {
@@ -53,7 +50,7 @@ public class ServerEngineProtocol implements WSServerListener {
             if (cmd.arg.equals("submit")) {
                 serverEngine.intervalLijst = newIntervals;
                 serverEngine.serverEngineThread.interrupt();
-                writeJSONFile(scheduleFileName, serverEngine.intervalLijst.intervals);
+                writeJSONFile(Brander.scheduleFileName, serverEngine.intervalLijst.intervals);
             }
             if (cmd.arg.equals("interval")) {
                 newIntervals.add(cmd.toInterval());
@@ -110,18 +107,5 @@ public class ServerEngineProtocol implements WSServerListener {
         }
     }
 
-    public void readJSONFile(String fileName) {
-        ArrayList<Object> l;
-        l = JSON2Object.readJSONFile(fileName, WebCommand.class);
-        IntervalLijst newIntervals = new IntervalLijst();
-        for (Object o : l) {
-            WebCommand webCommand = (WebCommand) o;
-            System.out.println(" read from json file " + webCommand.toString());
-            System.out.println("   converted to interval " + webCommand.toInterval().toString());
-            newIntervals.add(webCommand.toInterval());
-        }
-        serverEngine.intervalLijst = newIntervals;
-        serverEngine.serverEngineThread.interrupt();
-        String scheduleFileName = "/home/pi/Brander.json";
-    }
+
 }
