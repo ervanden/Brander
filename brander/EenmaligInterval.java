@@ -1,13 +1,11 @@
 package brander;
 
 
-import javax.swing.text.DateFormatter;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class EenmaligInterval extends TijdsInterval implements Interval {
+public class EenmaligInterval extends Interval {
 
     public LocalDate datum;
 
@@ -23,7 +21,6 @@ public class EenmaligInterval extends TijdsInterval implements Interval {
         this.datum = datum;
     }
 
-
     public boolean bevat(LocalDateTime dt) {
         int uur = dt.getHour();
         int minuut = dt.getMinute();
@@ -31,30 +28,12 @@ public class EenmaligInterval extends TijdsInterval implements Interval {
         return this.bevat(uur, minuut) && datum.isEqual(d);
     }
 
+    @Override
     public String getDag() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
         return datum.format(formatter);
     }
 
-    @Override
-    public int getVanUur() {
-        return vanUur;
-    }
-
-    @Override
-    public int getTotUur() {
-        return totUur;
-    }
-
-    @Override
-    public int getVanMinuut() {
-        return vanMinuut;
-    }
-
-    @Override
-    public int getTotMinuut() {
-        return totMinuut;
-    }
 
 
 }

@@ -17,9 +17,12 @@ public class ServerEngineProtocol implements WSServerListener {
 
     private ServerEngine serverEngine;
     private IntervalLijst newIntervals;
+    final String scheduleFileName = "/home/pi/Brander.json";
+
 
     ServerEngineProtocol(ServerEngine serverEngine) {
         this.serverEngine = serverEngine;
+        readJSONFile(scheduleFileName);
     }
 
     public List<String> onClientRequest(String clientID, String request) {
@@ -54,25 +57,15 @@ public class ServerEngineProtocol implements WSServerListener {
             if (cmd.arg.equals("submit")) {
                 serverEngine.intervalLijst = newIntervals;
                 serverEngine.serverEngineThread.interrupt();
-                String scheduleFileName = "/home/pi/Brander.json";
                 writeJSONFile(scheduleFileName, serverEngine.intervalLijst.intervals);
             }
             if (cmd.arg.equals("interval")) {
-                Interval interval;
-                try {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
-                    LocalDate datum = LocalDate.parse(cmd.dag, formatter);
-                    interval = new EenmaligInterval(datum, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
-                } catch (DateTimeParseException e) {
-                    interval = new HerhalendInterval(cmd.dag, cmd.vanuur, cmd.vanmin, cmd.totuur, cmd.totmin);
-                }
-                newIntervals.add(interval);
+                newIntervals.add(cmd.toInterval());
             }
         }
 
         return reply;
     }
-
 
     public static Object jsonStringToObject(String jsonString, Class<?> valueType) {
         Object jsonObject = null;
@@ -119,5 +112,20 @@ public class ServerEngineProtocol implements WSServerListener {
         } catch (IOException io) {
             System.out.println("io exception");
         }
+    }
+
+    public void readJSONFile(String fileName) {
+        ArrayList<Object> l;
+        l = JSON2Object.readJSONFile(fileName, WebCommand.class);
+        IntervalLijst newIntervals = new IntervalLijst();
+        for (Object o : l) {
+            WebCommand webCommand = (WebCommand) o;
+            System.out.println(" read from json file " + webCommand.toString());
+            System.out.println("   converted to interval " + webCommand.toInterval().toString());
+            newIntervals.add(webCommand.toInterval());
+        }
+        serverEngine.intervalLijst = newIntervals;
+        serverEngine.serverEngineThread.interrupt();
+        String scheduleFileName = "/home/pi/Brander.json";
     }
 }

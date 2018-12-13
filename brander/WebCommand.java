@@ -1,5 +1,9 @@
 package brander;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class WebCommand {
     public String command;
     public String arg;
@@ -19,6 +23,18 @@ public class WebCommand {
         totuur = interval.getTotUur();
         totmin = interval.getTotMinuut();
         vanmin = interval.getVanMinuut();
+    }
+
+    public Interval toInterval() {
+        Interval interval;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/y");
+            LocalDate datum = LocalDate.parse(dag, formatter);
+            interval = new EenmaligInterval(datum, vanuur, vanmin, totuur, totmin);
+        } catch (DateTimeParseException e) {
+            interval = new HerhalendInterval(dag, vanuur, vanmin, totuur, totmin);
+        }
+        return interval;
     }
 
     public String toString() {

@@ -1,17 +1,40 @@
 package brander;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
-public interface Interval {
-    public boolean bevat(LocalDateTime dt);
+public abstract class Interval extends TijdsInterval {
 
-    public String getDag();
+    public Interval(int vanUur,
+                    int vanMinuut,
+                    int totUur,
+                    int totMinuut) {
+        this.vanMinuut = vanMinuut;
+        this.vanUur = vanUur;
+        this.totMinuut = totMinuut;
+        this.totUur = totUur;
+    }
 
-    public int getVanUur();
+    public abstract boolean bevat(LocalDateTime dt);
 
-    public int getTotUur();
+    public abstract String getDag();
 
-    public int getVanMinuut();
+    public int getVanUur() {
+        return vanUur;
+    }
 
-    public int getTotMinuut();
+    public int getTotUur() {
+        return totUur;
+    }
+
+    public int getVanMinuut() {
+        return vanMinuut;
+    }
+
+    public int getTotMinuut() {
+        return totMinuut;
+    }
+
 }

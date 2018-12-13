@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class HerhalendInterval extends TijdsInterval implements Interval {
+public class HerhalendInterval extends Interval {
 
     public DayOfWeek dag;
 
@@ -26,28 +26,9 @@ public class HerhalendInterval extends TijdsInterval implements Interval {
         return this.bevat(uur, minuut) && dag == dtdag;
     }
 
+    @Override
     public String getDag() {
         return dag.toString();
-    }
-
-    @Override
-    public int getVanUur() {
-        return vanUur;
-    }
-
-    @Override
-    public int getTotUur() {
-        return totUur;
-    }
-
-    @Override
-    public int getVanMinuut() {
-        return vanMinuut;
-    }
-
-    @Override
-    public int getTotMinuut() {
-        return totMinuut;
     }
 
     public static DayOfWeek toDayOfWeek(String dayName) {
