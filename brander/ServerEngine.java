@@ -3,6 +3,7 @@ package brander;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pi4j.io.gpio.*;
@@ -58,11 +59,14 @@ public class ServerEngine {
                 Gpio3.setState(state);
             }
         }
-
     }
 
     public void start() {
-
+        // start de scheduling al zelfs al is de json file nog niet gelezen.
+        serverEngineThread = new ServerEngineThread();
+        serverEngineThread.start();
+        // json  file wordt nu gelezen en interrupt de serverEngineThread.
+        // daarom moet die eerst gestart worden
         serverEngineProtocol = new ServerEngineProtocol(this);
         wsServer = new WSServer(port);
         wsServer.addListener(serverEngineProtocol);
@@ -77,10 +81,6 @@ public class ServerEngine {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
-
-        serverEngineThread = new ServerEngineThread();
-        serverEngineThread.start();
-
     }
 
     class ServerEngineThread extends Thread {
