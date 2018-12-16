@@ -51,6 +51,9 @@ public class ServerEngineProtocol implements WSServerListener {
                 serverEngine.intervalLijst = newIntervals;
                 serverEngine.serverEngineThread.interrupt();
                 writeJSONFile(Brander.scheduleFileName, serverEngine.intervalLijst.getIntervals());
+                WebCommand webCommand = new WebCommand();
+                webCommand.command = "submitConfirmation";
+                reply.add(webCommand.toJSON());
             }
             if (cmd.arg.equals("interval")) {
                 newIntervals.add(cmd.toInterval());
