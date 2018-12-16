@@ -10,8 +10,8 @@ public class Brander {
     static boolean server_active;
     static int server_port;
     static boolean server_test;
-    //    final static String scheduleFileName = "/home/pi/Brander.json";
-    final static String scheduleFileName = "C:\\Users\\erikv\\Downloads\\Brander.json";
+    final static String scheduleFileName = "/home/pi/Brander.json";
+    // final static String scheduleFileName = "C:\\Users\\erikv\\Downloads\\Brander.json";
 
 
     private static void usage() {
@@ -48,11 +48,11 @@ public class Brander {
 
             ServerEngine serverEngine = new ServerEngine(server_port, server_verbosity, server_active, server_test);
             serverEngine.start();
-            Thread.sleep(1000);
-            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"reset\"}");
-            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"interval\",\"dag\":\"13/12/2018\",\"vanuur\":\"0\",\"vanmin\":\"0\",\"totuur\":\"23\",\"totmin\":\"59\"}");
-            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"dag\":\"SUNDAY\",\"vanuur\":0,\"vanmin\":0,\"totuur\":23,\"totmin\":55,\"command\":\"putSchedule\",\"arg\":\"interval\"}");
-            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"submit\"}");
+//            Thread.sleep(1000);
+//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"reset\"}");
+//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"interval\",\"dag\":\"13/12/2018\",\"vanuur\":\"0\",\"vanmin\":\"0\",\"totuur\":\"23\",\"totmin\":\"59\"}");
+//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"dag\":\"SUNDAY\",\"vanuur\":0,\"vanmin\":0,\"totuur\":23,\"totmin\":55,\"command\":\"putSchedule\",\"arg\":\"interval\"}");
+//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"submit\"}");
         } else {
             usage();
         }
