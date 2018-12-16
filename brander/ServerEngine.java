@@ -14,7 +14,7 @@ public class ServerEngine {
     int verbosity;
     boolean active;
     boolean test;
-    WSServer wsServer;
+    WSServer wsServer = null;
     ServerEngineProtocol serverEngineProtocol;
     ServerEngineThread serverEngineThread;
 
@@ -35,25 +35,25 @@ public class ServerEngine {
         return state;
     }
 
-    public void changeState(boolean newstate) {
-        if (state && !newstate) {  // switch off
+    public void changeState(boolean newState) {
+        if (state && !newState) {  // switch off
             state = false;
             System.out.println("Changing state to OFF");
             WebCommand webCommand = new WebCommand();
             webCommand.command = "status";
             webCommand.arg = "OFF";
-            wsServer.sendToAll(webCommand.toJSON());
+            if (wsServer != null) wsServer.sendToAll(webCommand.toJSON());
             if (active) {
                 System.out.println("GPIO 3 (heating) set to " + state);
                 Gpio3.setState(state);
             }
-        } else if (!state && newstate) { // switch on
+        } else if (!state && newState) { // switch on
             state = true;
             System.out.println("Changing state to ON");
             WebCommand webCommand = new WebCommand();
             webCommand.command = "status";
             webCommand.arg = "ON";
-            wsServer.sendToAll(webCommand.toJSON());
+            if (wsServer != null) wsServer.sendToAll(webCommand.toJSON());
             if (active) {
                 System.out.println("GPIO 3 (heating) set to " + state);
                 Gpio3.setState(state);
@@ -64,6 +64,9 @@ public class ServerEngine {
     public void start() {
 
         readJSONFile(Brander.scheduleFileName);
+        for (Interval interval : intervalLijst.getIntervals()) {
+            System.out.println("schedule bij start=" + interval.toString());
+        }
         serverEngineThread = new ServerEngineThread();
         serverEngineThread.start();
 
@@ -71,11 +74,6 @@ public class ServerEngine {
         wsServer = new WSServer(port);
         wsServer.addListener(serverEngineProtocol);
         wsServer.start();
-
-        LocalDate d = LocalDate.now();
-        intervalLijst = new IntervalLijst();
-        EenmaligInterval i1 = new EenmaligInterval(d, 0, 0, 23, 59);
-        intervalLijst.add(i1);
 
         if (active) {
             gpio = GpioFactory.getInstance();
@@ -92,8 +90,6 @@ public class ServerEngine {
         IntervalLijst newIntervals = new IntervalLijst();
         for (Object o : l) {
             WebCommand webCommand = (WebCommand) o;
-            System.out.println(" read from json file " + webCommand.toString());
-            System.out.println("   converted to interval " + webCommand.toInterval().toString());
             newIntervals.add(webCommand.toInterval());
         }
         intervalLijst = newIntervals;
@@ -115,6 +111,9 @@ public class ServerEngine {
                     // bij het veranderen van de IntervalLijst (vanuit de web client) interrupten
                     // we de sleep zodat de toestand direct geevalueerd wordt
                     System.out.println("server engine interrrupted!!!");
+                    for (Interval interval : intervalLijst.getIntervals()) {
+                        System.out.println("schedule bij interrupt=" + interval.toString());
+                    }
                 }
             }
         }

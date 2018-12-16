@@ -37,7 +37,7 @@ public class ServerEngineProtocol implements WSServerListener {
         }
 
         if (cmd.command.equals("getSchedule")) {
-            for (Interval interval : serverEngine.intervalLijst.intervals) {
+            for (Interval interval : serverEngine.intervalLijst.getIntervals()) {
                 WebCommand webCommand = new WebCommand(interval);
                 webCommand.command = "schedule";
                 reply.add(webCommand.toJSON());
@@ -50,13 +50,12 @@ public class ServerEngineProtocol implements WSServerListener {
             if (cmd.arg.equals("submit")) {
                 serverEngine.intervalLijst = newIntervals;
                 serverEngine.serverEngineThread.interrupt();
-                writeJSONFile(Brander.scheduleFileName, serverEngine.intervalLijst.intervals);
+                writeJSONFile(Brander.scheduleFileName, serverEngine.intervalLijst.getIntervals());
             }
             if (cmd.arg.equals("interval")) {
                 newIntervals.add(cmd.toInterval());
             }
         }
-
         return reply;
     }
 
@@ -84,14 +83,14 @@ public class ServerEngineProtocol implements WSServerListener {
             BufferedWriter outputStream = new BufferedWriter(isr);
 
             for (Interval interval : intervals) {
-                System.out.println("{ "
-                        + "\"" + "dag" + "\"" + ":" + "\"" + interval.getDag() + "\", "
-                        + "\"" + "vanuur" + "\"" + ":" + interval.getVanUur() + ", "
-                        + "\"" + "vanmin" + "\"" + ":" + interval.getVanMinuut() + ", "
-                        + "\"" + "totuur" + "\"" + ":" + interval.getTotUur() + ", "
-                        + "\"" + "totmin" + "\"" + ":" + interval.getTotMinuut()
-                        + "}"
-                );
+//                System.out.println("{ "
+//                        + "\"" + "dag" + "\"" + ":" + "\"" + interval.getDag() + "\", "
+//                        + "\"" + "vanuur" + "\"" + ":" + interval.getVanUur() + ", "
+//                        + "\"" + "vanmin" + "\"" + ":" + interval.getVanMinuut() + ", "
+//                        + "\"" + "totuur" + "\"" + ":" + interval.getTotUur() + ", "
+//                        + "\"" + "totmin" + "\"" + ":" + interval.getTotMinuut()
+//                        + "}"
+//                );
                 outputStream.write("{ "
                         + "\"" + "dag" + "\"" + ":" + "\"" + interval.getDag() + "\", "
                         + "\"" + "vanuur" + "\"" + ":" + interval.getVanUur() + ", "

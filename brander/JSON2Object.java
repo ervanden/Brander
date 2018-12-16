@@ -66,7 +66,6 @@ public class JSON2Object {
                 if (nbrackets == 0) {
                     if (c == '}') {
                         json = json + c;
-                        System.out.println("JSON=" + json);
                         jsonObjects.add(jsonStringToObject(json, valueType));
                         json = "";
                     }
