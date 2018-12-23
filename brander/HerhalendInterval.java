@@ -27,6 +27,11 @@ public class HerhalendInterval extends Interval {
     }
 
     @Override
+    public boolean isVoorbij() {
+        return false;
+    } // herhalend interval is nooit voorbij
+
+    @Override
     public String getDag() {
         return dag.toString();
     }

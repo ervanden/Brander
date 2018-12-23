@@ -15,8 +15,6 @@
             button.OFF {font-weight: 900;color: rgb(0,0,255); background-color: white; border:none}
             button.UNKNOWN {font-weight: 900;color: lightgrey; background-color: white; border:none}
 
-
-
 </style>
 
 
@@ -28,20 +26,17 @@
 </div>
 <button type="button" id="addbutton" class="addbutton">ADD</button>
 <button type="button" id="submitbutton" class="submitbutton">SUBMIT</button>
-<span id="statusinfo" class="userinfo"></span>
-<div id="logdiv"
-</div>
 
 
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-
 <script>
-
-
 
 var now=new Date();
 var vandaag=now.getDate()+"/"+(now.getMonth()+1)+"/"+now.getFullYear();
-g_dagen = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY",vandaag];
+var g_dagen = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY",vandaag];
+var g_messageModal = document.getElementById('messageModal');
+var g_submitButton = document.getElementById('submitbutton');
+
 
 function setStatus(status){
 g_statusbutton.data=status;
@@ -70,7 +65,7 @@ interval.totmin=55;
 addInterval(interval);
 }
 
-document.getElementById("submitbutton").onclick = function (){
+g_submitButton.onclick = function (){
 var command={};
 command.command="putSchedule";
 command.arg="reset";
@@ -287,8 +282,16 @@ function addInterval(data){
                                       addInterval(obj);
                                    }
                                    if (obj.command=="status"){
-
                                       setStatus(obj.arg);
+                                   }
+                                   if (obj.command=="submitConfirmation"){
+                                      var color=g_submitButton.style.backgroundColor;
+                                      var text=g_submitButton.innerHTML;
+                                      g_submitButton.style.backgroundColor="green";
+                                      g_submitButton.innerHTML="RECEIVED !!";
+                                      setTimeout(function () { 
+                                          g_submitButton.style.backgroundColor=color;
+                                          g_submitButton.innerHTML=text;} , 1000);
                                    }
                                 }
                            }
@@ -297,6 +300,12 @@ function addInterval(data){
                         alert("WebSocket NOT supported by your Browser!");
                     }
                 }
+
+
+
+
+
+
 </script>
 
 </body>

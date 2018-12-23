@@ -38,9 +38,11 @@ public class ServerEngineProtocol implements WSServerListener {
 
         if (cmd.command.equals("getSchedule")) {
             for (Interval interval : serverEngine.intervalLijst.getIntervals()) {
-                WebCommand webCommand = new WebCommand(interval);
-                webCommand.command = "schedule";
-                reply.add(webCommand.toJSON());
+                if (!interval.isVoorbij()) {
+                    WebCommand webCommand = new WebCommand(interval);
+                    webCommand.command = "schedule";
+                    reply.add(webCommand.toJSON());
+                }
             }
         }
         if (cmd.command.equals("putSchedule")) {

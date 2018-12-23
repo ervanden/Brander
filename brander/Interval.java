@@ -37,4 +37,6 @@ public abstract class Interval extends TijdsInterval {
         return totMinuut;
     }
 
+    public abstract boolean isVoorbij();
+
 }

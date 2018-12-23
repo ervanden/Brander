@@ -34,6 +34,10 @@ public class EenmaligInterval extends Interval {
         return datum.format(formatter);
     }
 
-
+    @Override
+    public boolean isVoorbij() {
+        LocalDate now = LocalDate.now();
+        return now.isAfter(datum);
+    }
 
 }
