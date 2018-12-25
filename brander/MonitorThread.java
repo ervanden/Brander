@@ -4,18 +4,23 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 
 public class MonitorThread extends Thread {
     Pin pin;
     long p_mil; // time of last pin state change
+    Long millisOn = 0l;
+
 
     public MonitorThread(Pin pin) {
         this.pin = pin;
+    }
+
+    public void resetMillisOn() {
+        millisOn = 0l;
+    }
+
+    public int getMillisOn() {
+        return millisOn.intValue();
     }
 
     public void run() {
@@ -30,10 +35,15 @@ public class MonitorThread extends Thread {
                 long mil = System.currentTimeMillis();
                 long delta = mil - p_mil;
                 p_mil = mil;
+                if (event.getState().isLow()) {
+                    millisOn = millisOn + delta;
+                }
                 System.out.println(delta + " msec  "
                         + "--> GPIO PIN " + pin
                         + " STATE CHANGE: " + event.getPin()
-                        + " = " + event.getState());
+                        + " = " + event.getState()
+                        + "    total ON= " + String.format("%d", millisOn.intValue() / 1000)
+                );
             }
         });
 
