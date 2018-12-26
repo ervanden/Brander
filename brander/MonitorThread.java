@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class MonitorThread extends Thread {
     Pin pin;
-    long p_mil; // time of last pin state change
+    long p_mil = System.currentTimeMillis(); // time of last pin state change
     Long millisOn = 0l;
     boolean stable = false;
 
@@ -46,7 +46,7 @@ public class MonitorThread extends Thread {
                         + "--> GPIO PIN " + pin
                         + " STATE CHANGE: " + event.getPin()
                         + " = " + event.getState()
-                        + "    total ON= " + String.format("%d", millisOn.intValue() / 1000)
+                        + "    total ON= " + millisOn.intValue() / 1000
                 );
             }
         });
@@ -55,13 +55,13 @@ public class MonitorThread extends Thread {
         final int SLEEPTIME = 2;
         try {
             while (true) {
-                if (stable && branderSensor.isLow()) {
-                    // de brander is al minstens SLEEPTIME seconden stabiel OFF
-                    if (millisOn > 0) {
-                        logOnTime(millisOn);
-                        millisOn = 0l;
-                    }
-                }
+//                if (stable && branderSensor.isLow()) {
+//                    // de brander is al minstens SLEEPTIME seconden stabiel OFF
+//                    if (millisOn > 0) {
+//                        logOnTime(millisOn);
+//                        millisOn = 0l;
+//                    }
+//                }
                 stable = true;
                 Thread.sleep(SLEEPTIME);
             }
