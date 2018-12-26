@@ -52,7 +52,7 @@ public class MonitorThread extends Thread {
         });
 
         System.out.println(" ... Listening on " + pin.toString());
-        final int SLEEPTIME = 2;
+        final int SLEEPSEC = 2;
         try {
             while (true) {
                 System.out.println("MONITOR LOG stable=" + stable + " isLow()=" + branderSensor.isLow() + " ONTIME=" + millisOn.intValue() / 1000);
@@ -64,7 +64,7 @@ public class MonitorThread extends Thread {
 //                    }
 //                }
                 stable = true;
-                Thread.sleep(SLEEPTIME);
+                Thread.sleep(SLEEPSEC * 1000);
             }
         } catch (InterruptedException ie) {
             System.out.println("Who interrupted the monitor thread???");
