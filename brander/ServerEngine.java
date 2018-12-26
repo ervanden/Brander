@@ -21,7 +21,7 @@ public class ServerEngine {
     public IntervalLijst intervalLijst = new IntervalLijst();
     private Boolean state = false;
 
-    public ServerEngine(int port, int verbosity, boolean active, boolean test) {
+    public ServerEngine(int port, int verbosity, boolean active) {
         this.port = port;
         this.verbosity = verbosity;
         this.active = active;
@@ -70,14 +70,14 @@ public class ServerEngine {
         serverEngineProtocol = new ServerEngineProtocol(this);
         wsServer = new WSServer(port);
         wsServer.addListener(serverEngineProtocol);
-        wsServer.start();
+        //      wsServer.start();
 
         if (active) {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
-        serverEngineThread = new ServerEngineThread();
-        serverEngineThread.start();
+//        serverEngineThread = new ServerEngineThread();
+//        serverEngineThread.start();
 
     }
 
@@ -97,7 +97,7 @@ public class ServerEngine {
             while (true) {
                 try {
                     LocalDateTime now = LocalDateTime.now();
-                    System.out.println("--- " + now);
+                    //                 System.out.println("--- " + now);
                     if (intervalLijst.bevat(now)) {
                         changeState(true);
                     } else {
