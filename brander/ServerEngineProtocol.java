@@ -86,16 +86,7 @@ public class ServerEngineProtocol implements WSServerListener {
             OutputStream is = new FileOutputStream(initialFile);
             OutputStreamWriter isr = new OutputStreamWriter(is, "UTF-8");
             BufferedWriter outputStream = new BufferedWriter(isr);
-
             for (Interval interval : intervals) {
-//                System.out.println("{ "
-//                        + "\"" + "dag" + "\"" + ":" + "\"" + interval.getDag() + "\", "
-//                        + "\"" + "vanuur" + "\"" + ":" + interval.getVanUur() + ", "
-//                        + "\"" + "vanmin" + "\"" + ":" + interval.getVanMinuut() + ", "
-//                        + "\"" + "totuur" + "\"" + ":" + interval.getTotUur() + ", "
-//                        + "\"" + "totmin" + "\"" + ":" + interval.getTotMinuut()
-//                        + "}"
-//                );
                 outputStream.write("{ "
                         + "\"" + "dag" + "\"" + ":" + "\"" + interval.getDag() + "\", "
                         + "\"" + "vanuur" + "\"" + ":" + interval.getVanUur() + ", "

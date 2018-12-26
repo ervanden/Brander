@@ -4,11 +4,14 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
+import java.time.LocalDateTime;
+
 
 public class MonitorThread extends Thread {
     Pin pin;
     long p_mil; // time of last pin state change
     Long millisOn = 0l;
+    boolean stable = false;
 
 
     public MonitorThread(Pin pin) {
@@ -25,13 +28,14 @@ public class MonitorThread extends Thread {
 
     public void run() {
         final GpioController gpio = GpioFactory.getInstance();
-        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(pin,             // PIN NUMBER
+        final GpioPinDigitalInput branderSensor = gpio.provisionDigitalInputPin(pin,             // PIN NUMBER
                 "branderSensor",                   // PIN FRIENDLY NAME (optional)
                 PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)
 
-        myButton.addListener(new GpioPinListenerDigital() {
+        branderSensor.addListener(new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                stable = false;
                 long mil = System.currentTimeMillis();
                 long delta = mil - p_mil;
                 p_mil = mil;
@@ -48,14 +52,27 @@ public class MonitorThread extends Thread {
         });
 
         System.out.println(" ... Listening on " + pin.toString());
-
+        final int SLEEPTIME = 2;
         try {
             while (true) {
-                Thread.sleep(5000);
+                if (stable && branderSensor.isLow()) {
+                    // de brander is al minstens SLEEPTIME seconden stabiel OFF
+                    if (millisOn > 0) {
+                        logOnTime(millisOn);
+                        millisOn = 0l;
+                    }
+                }
+                stable = true;
+                Thread.sleep(SLEEPTIME);
             }
         } catch (InterruptedException ie) {
             System.out.println("Who interrupted the monitor thread???");
         }
+    }
+
+    private void logOnTime(Long millisOn) {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(now.toString() + " " + millisOn.intValue() / 1000);
     }
 }
 
