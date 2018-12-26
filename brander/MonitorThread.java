@@ -8,13 +8,16 @@ import java.time.LocalDateTime;
 
 
 public class MonitorThread extends Thread {
+
     Pin pin;
     long p_mil = System.currentTimeMillis(); // time of last pin state change
     Long millisOn = 0l;
     boolean stable = false;
+    WSServer wsServer;
+    WebCommand webCommand = new WebCommand();
 
-
-    public MonitorThread(Pin pin) {
+    public MonitorThread(WSServer wsServer, Pin pin) {
+        this.wsServer = wsServer;
         this.pin = pin;
     }
 
@@ -56,11 +59,19 @@ public class MonitorThread extends Thread {
         try {
             while (true) {
                 //              System.out.println("MONITOR LOG stable=" + stable + " isLow()=" + branderSensor.isLow() + " ONTIME=" + millisOn.intValue() / 1000);
-                if (stable && branderSensor.isLow()) {
-                    // de brander is al minstens SLEEPTIME seconden stabiel OFF
-                    if (millisOn > 0) {
-                        logOnTime(millisOn);
-                        millisOn = 0l;
+                if (stable) { // geen transities in de laatste SLEEPSEC seconden
+                    if (branderSensor.isLow()) { // de brander is al minstens SLEEPTIME seconden stabiel OFF
+                        if (millisOn > 0) {
+                            logOnTime(millisOn);
+                            millisOn = 0l;
+                        }
+                        webCommand.command = "fire";
+                        webCommand.arg = "OFF";
+                        wsServer.sendToAll(webCommand.toJSON());
+                    } else { // de brander is al minstens SLEEPTIME seconden stabiel ON
+                        webCommand.command = "fire";
+                        webCommand.arg = "ON";
+                        wsServer.sendToAll(webCommand.toJSON());
                     }
                 }
                 stable = true;

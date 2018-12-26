@@ -14,6 +14,7 @@ public class ServerEngine {
     WSServer wsServer = null;
     ServerEngineProtocol serverEngineProtocol;
     ServerEngineThread serverEngineThread;
+    MonitorThread monitorThread;
 
     static GpioController gpio;
     static GpioPinDigitalOutput Gpio3;  // heating
@@ -76,9 +77,8 @@ public class ServerEngine {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
-//        serverEngineThread = new ServerEngineThread();
-//        serverEngineThread.start();
-
+        monitorThread = new MonitorThread(wsServer, RaspiPin.GPIO_02);
+        monitorThread.start();
     }
 
     public void readJSONFile(String fileName) {
@@ -97,7 +97,6 @@ public class ServerEngine {
             while (true) {
                 try {
                     LocalDateTime now = LocalDateTime.now();
-                    //                 System.out.println("--- " + now);
                     if (intervalLijst.bevat(now)) {
                         changeState(true);
                     } else {

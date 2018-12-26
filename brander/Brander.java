@@ -46,7 +46,6 @@ public class Brander {
 
             ServerEngine serverEngine = new ServerEngine(server_port, server_verbosity, server_active);
             serverEngine.start();
-            new MonitorThread(RaspiPin.GPIO_02).start();
 
 //            Thread.sleep(1000);
 //            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"reset\"}");

@@ -35,7 +35,6 @@ public class ServerEngineProtocol implements WSServerListener {
             }
             reply.add(webCommand.toJSON());
         }
-
         if (cmd.command.equals("getSchedule")) {
             for (Interval interval : serverEngine.intervalLijst.getIntervals()) {
                 if (!interval.isVoorbij()) {
