@@ -13,6 +13,7 @@ public class Brander {
     static boolean server_active;
     static int server_port;
     final static String scheduleFileName = "/home/pi/Brander.json";
+    final static String logFileName = "/home/pi/BranderLog.txt";
     // final static String scheduleFileName = "C:\\Users\\erikv\\Downloads\\Brander.json";
 
 

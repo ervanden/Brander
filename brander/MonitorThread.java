@@ -15,18 +15,12 @@ public class MonitorThread extends Thread {
     boolean stable = false;
     WSServer wsServer;
     WebCommand webCommand = new WebCommand();
+    BranderLogger logger;
 
-    public MonitorThread(WSServer wsServer, Pin pin) {
+    public MonitorThread(WSServer wsServer, BranderLogger logger, Pin pin) {
         this.wsServer = wsServer;
+        this.logger = logger;
         this.pin = pin;
-    }
-
-    public void resetMillisOn() {
-        millisOn = 0l;
-    }
-
-    public int getMillisOn() {
-        return millisOn.intValue();
     }
 
     public void run() {
@@ -85,6 +79,7 @@ public class MonitorThread extends Thread {
     private void logOnTime(Long millisOn) {
         LocalDateTime now = LocalDateTime.now();
         System.out.println(now.toString() + " " + millisOn.intValue() / 1000);
+        logger.log(now, millisOn.intValue() / 1000);
     }
 }
 

@@ -15,6 +15,7 @@ public class ServerEngine {
     ServerEngineProtocol serverEngineProtocol;
     ServerEngineThread serverEngineThread;
     MonitorThread monitorThread;
+    BranderLogger logger;
 
     static GpioController gpio;
     static GpioPinDigitalOutput Gpio3;  // heating
@@ -77,7 +78,9 @@ public class ServerEngine {
             gpio = GpioFactory.getInstance();
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
-        monitorThread = new MonitorThread(wsServer, RaspiPin.GPIO_02);
+
+        logger = new BranderLogger(Brander.logFileName);
+        monitorThread = new MonitorThread(wsServer, logger, RaspiPin.GPIO_02);
         monitorThread.start();
     }
 
@@ -97,6 +100,7 @@ public class ServerEngine {
             while (true) {
                 try {
                     LocalDateTime now = LocalDateTime.now();
+                    logger.log(now, state ? 1 : 0);
                     if (intervalLijst.bevat(now)) {
                         changeState(true);
                     } else {
