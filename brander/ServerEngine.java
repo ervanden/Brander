@@ -62,6 +62,8 @@ public class ServerEngine {
 
     public void start() {
 
+        logger = new BranderLogger(Brander.logFileName);
+
         readJSONFile(Brander.scheduleFileName);
         for (Interval interval : intervalLijst.getIntervals()) {
             System.out.println("schedule bij start=" + interval.toString());
@@ -79,7 +81,6 @@ public class ServerEngine {
             Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
         }
 
-        logger = new BranderLogger(Brander.logFileName);
         monitorThread = new MonitorThread(wsServer, logger, RaspiPin.GPIO_02);
         monitorThread.start();
     }
@@ -100,7 +101,6 @@ public class ServerEngine {
             while (true) {
                 try {
                     LocalDateTime now = LocalDateTime.now();
-                    logger.log(now, state ? 1 : 0);
                     if (intervalLijst.bevat(now)) {
                         changeState(true);
                     } else {
