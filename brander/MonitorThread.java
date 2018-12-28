@@ -39,12 +39,12 @@ public class MonitorThread extends Thread {
                 if (event.getState().isLow()) {
                     millisOn = millisOn + delta;
                 }
-//                System.out.println(delta + " msec  "
-//                        + "--> GPIO PIN " + pin
-//                        + " STATE CHANGE: " + event.getPin()
-//                        + " = " + event.getState()
-//                        + "    total ON= " + millisOn.intValue() / 1000
-//                );
+                System.out.println(delta + " msec  "
+                        + "--> GPIO PIN " + pin
+                        + " STATE CHANGE: " + event.getPin()
+                        + " = " + event.getState()
+                        + "    total ON= " + millisOn.intValue() / 1000
+                );
             }
         });
 
@@ -52,7 +52,7 @@ public class MonitorThread extends Thread {
         final int SLEEPSEC = 2;
         try {
             while (true) {
-                //              System.out.println("MONITOR LOG stable=" + stable + " isLow()=" + branderSensor.isLow() + " ONTIME=" + millisOn.intValue() / 1000);
+                System.out.println("MONITOR LOG stable=" + stable + " isLow()=" + branderSensor.isLow() + " ONTIME=" + millisOn.intValue() / 1000);
                 if (stable) { // geen transities in de laatste SLEEPSEC seconden
                     if (branderSensor.isLow()) { // de brander is al minstens SLEEPTIME seconden stabiel OFF
                         if (millisOn > 0) {
