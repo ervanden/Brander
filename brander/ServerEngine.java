@@ -62,6 +62,11 @@ public class ServerEngine {
 
     public void start() {
 
+        if (active) {
+            gpio = GpioFactory.getInstance();
+            Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
+        }
+
         logger = new BranderLogger(Brander.logFileName);
 
         readJSONFile(Brander.scheduleFileName);
@@ -74,12 +79,7 @@ public class ServerEngine {
         serverEngineProtocol = new ServerEngineProtocol(this);
         wsServer = new WSServer(port);
         wsServer.addListener(serverEngineProtocol);
-        //      wsServer.start();
-
-        if (active) {
-            gpio = GpioFactory.getInstance();
-            Gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "heating", PinState.LOW);
-        }
+        wsServer.start();
 
         monitorThread = new MonitorThread(wsServer, logger, RaspiPin.GPIO_02);
         monitorThread.start();

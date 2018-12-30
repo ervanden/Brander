@@ -49,7 +49,7 @@ public class MonitorThread extends Thread {
         });
 
         System.out.println(" ... Listening on " + pin.toString());
-        final int SLEEPSEC = 2;
+        final int SLEEPSEC = 1;
         try {
             while (true) {
                 System.out.println("MONITOR LOG stable=" + stable + " isLow()=" + branderSensor.isLow() + " ONTIME=" + millisOn.intValue() / 1000);
@@ -59,10 +59,12 @@ public class MonitorThread extends Thread {
                             logOnTime(millisOn);
                             millisOn = 0l;
                         }
+                        System.out.println("FIRE OFF");
                         webCommand.command = "fire";
                         webCommand.arg = "OFF";
                         wsServer.sendToAll(webCommand.toJSON());
                     } else { // de brander is al minstens SLEEPTIME seconden stabiel ON
+                        System.out.println("FIRE ON");
                         webCommand.command = "fire";
                         webCommand.arg = "ON";
                         wsServer.sendToAll(webCommand.toJSON());
