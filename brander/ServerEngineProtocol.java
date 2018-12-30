@@ -33,6 +33,8 @@ public class ServerEngineProtocol implements WSServerListener {
             } else {
                 webCommand.arg = "OFF";
             }
+            reply.add(webCommand.toJSON());
+
             webCommand.command = "fire";
             if (serverEngine.monitorThread.getHeatingState()) {
                 webCommand.arg = "ON";
