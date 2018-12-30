@@ -16,11 +16,16 @@ public class MonitorThread extends Thread {
     WSServer wsServer;
     WebCommand webCommand = new WebCommand();
     BranderLogger logger;
+    boolean heatingState;
 
     public MonitorThread(WSServer wsServer, BranderLogger logger, Pin pin) {
         this.wsServer = wsServer;
         this.logger = logger;
         this.pin = pin;
+    }
+
+    public boolean getHeatingState() {
+        return heatingState;
     }
 
     public void run() {
@@ -55,19 +60,25 @@ public class MonitorThread extends Thread {
                 System.out.println("MONITOR LOG stable=" + stable + " isLow()=" + branderSensor.isLow() + " ONTIME=" + millisOn.intValue() / 1000);
                 if (stable) { // geen transities in de laatste SLEEPSEC seconden
                     if (branderSensor.isLow()) { // de brander is al minstens SLEEPTIME seconden stabiel OFF
-                        if (millisOn > 0) {
-                            logOnTime(millisOn);
-                            millisOn = 0l;
+                        if (heatingState == true) {
+                            heatingState = false;
+                            System.out.println("FIRE OFF");
+                            webCommand.command = "fire";
+                            webCommand.arg = "OFF";
+                            wsServer.sendToAll(webCommand.toJSON());
+                            if (millisOn > 0) {
+                                logOnTime(millisOn);
+                                millisOn = 0l;
+                            }
                         }
-                        System.out.println("FIRE OFF");
-                        webCommand.command = "fire";
-                        webCommand.arg = "OFF";
-                        wsServer.sendToAll(webCommand.toJSON());
                     } else { // de brander is al minstens SLEEPTIME seconden stabiel ON
-                        System.out.println("FIRE ON");
-                        webCommand.command = "fire";
-                        webCommand.arg = "ON";
-                        wsServer.sendToAll(webCommand.toJSON());
+                        if (heatingState == false) {
+                            heatingState = true;
+                            System.out.println("FIRE ON");
+                            webCommand.command = "fire";
+                            webCommand.arg = "ON";
+                            wsServer.sendToAll(webCommand.toJSON());
+                        }
                     }
                 }
                 stable = true;
