@@ -11,15 +11,18 @@
             input.green {background-color:green}
             input.grey {background-color:grey}
             input.red {background-color:red}
-            button.ON {font-weight: 900;color: rgb(255,0,0); background-color: white; border:none}
-            button.OFF {font-weight: 900;color: rgb(0,0,255); background-color: white; border:none}
-            button.UNKNOWN {font-weight: 900;color: lightgrey; background-color: white; border:none}
+            .ON {font-weight: 900;color: rgb(255,0,0); background-color: white; border:none}
+            .OFF {font-weight: 900;color: rgb(0,0,255); background-color: white; border:none}
+            .HEATINGON {font-weight: 900;color: orange; background-color: white; border:none}
+            .HEATINGOFF {font-weight: 900;color: white; background-color: white; border:none}
+            .UNKNOWN {font-weight: 900;color: lightgrey; background-color: white; border:none}
 
 </style>
 
 
 <input type="text" id="serverAddress" name="serverAddress" class="white" value="ws://X.X.X.X:2603">
-<button type="button" id="statusbutton" class="unknownbutton">STATUS ?</button>
+<button type="button" id="statusbutton" class="UNKNOWN">STATUS ?</button>
+<span id="heatingspan" class="UNKNOWN">HEATING</span>
 <div id="tablediv">
     <table id="schedule">
     </table>
@@ -236,11 +239,12 @@ function addInterval(data){
                 // figure out ip address or host name to construct WebSocket server URL
 
                 var g_serverAddress = window.location.host.split(":", 1)[0];
-                g_serverAddress = "ws://" + g_serverAddress + ":4567";
+                g_serverAddress = "ws://" + g_serverAddress + ":4568";
                 document.getElementById('serverAddress').value=g_serverAddress;
               
                 var g_ws;
                 var g_statusbutton=document.getElementById("statusbutton");
+                var g_heatingspan=document.getElementById("heatingspan");
                 var g_table=document.getElementById("schedule");
 
 
@@ -283,6 +287,10 @@ function addInterval(data){
                                    }
                                    if (obj.command=="status"){
                                       setStatus(obj.arg);
+                                   }
+                                   if (obj.command=="fire"){
+                                      if (obj.arg=="ON") g_heatingspan.className="HEATINGON";
+                                      if (obj.arg=="OFF") g_heatingspan.className="HEATINGOFF";
                                    }
                                    if (obj.command=="submitConfirmation"){
                                       var color=g_submitButton.style.backgroundColor;

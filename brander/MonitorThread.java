@@ -64,7 +64,7 @@ public class MonitorThread extends Thread {
                             heatingState = false;
                             System.out.println("FIRE OFF");
                             webCommand.command = "fire";
-                            webCommand.arg = "OFF";
+                            webCommand.arg1 = "OFF";
                             wsServer.sendToAll(webCommand.toJSON());
                             if (millisOn > 0) {
                                 logOnTime(millisOn);
@@ -76,7 +76,7 @@ public class MonitorThread extends Thread {
                             heatingState = true;
                             System.out.println("FIRE ON");
                             webCommand.command = "fire";
-                            webCommand.arg = "ON";
+                            webCommand.arg1 = "ON";
                             wsServer.sendToAll(webCommand.toJSON());
                         }
                     }

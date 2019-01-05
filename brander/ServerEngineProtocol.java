@@ -29,17 +29,17 @@ public class ServerEngineProtocol implements WSServerListener {
             WebCommand webCommand = new WebCommand();
             webCommand.command = "status";
             if (serverEngine.getState()) {
-                webCommand.arg = "ON";
+                webCommand.arg1 = "ON";
             } else {
-                webCommand.arg = "OFF";
+                webCommand.arg1 = "OFF";
             }
             reply.add(webCommand.toJSON());
 
             webCommand.command = "fire";
             if (serverEngine.monitorThread.getHeatingState()) {
-                webCommand.arg = "ON";
+                webCommand.arg1 = "ON";
             } else {
-                webCommand.arg = "OFF";
+                webCommand.arg1 = "OFF";
             }
             reply.add(webCommand.toJSON());
         }
@@ -53,10 +53,10 @@ public class ServerEngineProtocol implements WSServerListener {
             }
         }
         if (cmd.command.equals("putSchedule")) {
-            if (cmd.arg.equals("reset")) {
+            if (cmd.arg1.equals("reset")) {
                 newIntervals = new IntervalLijst();
             }
-            if (cmd.arg.equals("submit")) {
+            if (cmd.arg1.equals("submit")) {
                 serverEngine.intervalLijst = newIntervals;
                 serverEngine.serverEngineThread.interrupt();
                 writeJSONFile(Brander.scheduleFileName, serverEngine.intervalLijst.getIntervals());
@@ -64,9 +64,23 @@ public class ServerEngineProtocol implements WSServerListener {
                 webCommand.command = "submitConfirmation";
                 reply.add(webCommand.toJSON());
             }
-            if (cmd.arg.equals("interval")) {
+            if (cmd.arg1.equals("interval")) {
                 newIntervals.add(cmd.toInterval());
             }
+        }
+        if (cmd.command.equals("data")) {
+            String aantalDagenString = cmd.arg1;
+            WebCommand webCommand = new WebCommand();
+            webCommand.command = "data";
+            webCommand.arg1 = "start";
+            reply.add(webCommand.toJSON());
+            webCommand.command = "data";
+            webCommand.arg1 = "datum1";
+            webCommand.arg2 = "seconden";
+            reply.add(webCommand.toJSON());
+            webCommand.command = "data";
+            webCommand.arg1 = "end";
+            reply.add(webCommand.toJSON());
         }
         return reply;
     }

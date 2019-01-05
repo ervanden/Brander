@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class EenmaligInterval extends Interval {
 
-    public LocalDate datum;
+    private LocalDate datum;
 
     public String toString() {
         LocalDateTime van = datum.atTime(vanUur, vanMinuut);

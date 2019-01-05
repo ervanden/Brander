@@ -40,7 +40,7 @@ public class ServerEngine {
             System.out.println("Changing state to OFF");
             WebCommand webCommand = new WebCommand();
             webCommand.command = "status";
-            webCommand.arg = "OFF";
+            webCommand.arg1 = "OFF";
             if (wsServer != null) wsServer.sendToAll(webCommand.toJSON());
             if (active) {
                 System.out.println("GPIO 3 (heating) set to " + state);
@@ -51,7 +51,7 @@ public class ServerEngine {
             System.out.println("Changing state to ON");
             WebCommand webCommand = new WebCommand();
             webCommand.command = "status";
-            webCommand.arg = "ON";
+            webCommand.arg1 = "ON";
             if (wsServer != null) wsServer.sendToAll(webCommand.toJSON());
             if (active) {
                 System.out.println("GPIO 3 (heating) set to " + state);

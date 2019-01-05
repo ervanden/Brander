@@ -6,7 +6,8 @@ import java.time.format.DateTimeParseException;
 
 public class WebCommand {
     public String command;
-    public String arg;
+    public String arg1;
+    public String arg2;
     public String dag;
     public Integer vanuur;
     public Integer vanmin;
@@ -41,7 +42,7 @@ public class WebCommand {
         String s = "";
         s = s + "{\n";
         s = s + "command : " + command + "\n";
-        s = s + "arg : " + arg + "\n";
+        s = s + "arg : " + arg1 + "\n";
         s = s + "dag : " + dag + "\n";
         s = s + "vanuur : " + vanuur + "\n";
         s = s + "vanmin : " + vanmin + "\n";
@@ -54,7 +55,7 @@ public class WebCommand {
     public String toJSON() {
         return "{"
                 + "\"command\":\"" + command + "\","
-                + "\"arg\":\"" + arg + "\","
+                + "\"arg\":\"" + arg1 + "\","
                 + "\"dag\":\"" + dag + "\","
                 + "\"vanuur\":\"" + vanuur + "\","
                 + "\"vanmin\":\"" + vanmin + "\","
