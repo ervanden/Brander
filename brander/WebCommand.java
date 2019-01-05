@@ -55,7 +55,8 @@ public class WebCommand {
     public String toJSON() {
         return "{"
                 + "\"command\":\"" + command + "\","
-                + "\"arg\":\"" + arg1 + "\","
+                + "\"arg1\":\"" + arg1 + "\","
+                + "\"arg2\":\"" + arg2 + "\","
                 + "\"dag\":\"" + dag + "\","
                 + "\"vanuur\":\"" + vanuur + "\","
                 + "\"vanmin\":\"" + vanmin + "\","
