@@ -17,7 +17,7 @@ public class KladLog {
 
     public static void main(String[] args) {
         System.out.println("KLAD");
-        List<DagTotaal> dagTotalen = new BranderLogger(Brander.logFileName).dagTotalen("C:\\Users\\erikv\\Downloads\\BranderLog.txt");
+        List<DagTotaal> dagTotalen = new BranderLogger(Brander.logFileName).dagTotalen();
 
     }
 
