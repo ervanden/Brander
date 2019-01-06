@@ -77,7 +77,7 @@ public class ServerEngineProtocol implements WSServerListener {
 
             String aantalDagenString = cmd.arg1;
             int aantalDagen = Integer.parseInt(aantalDagenString);
-            List<DagTotaal> dagTotalen = serverEngine.logger.dagTotalen();
+            List<DagTotaal> dagTotalen = serverEngine.logger.dagTotalen(aantalDagen);
             Collections.reverse(dagTotalen); // meest recente eerst
             int dag = 0;
             for (DagTotaal dagTotaal : dagTotalen) {

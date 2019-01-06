@@ -1,6 +1,7 @@
 package brander;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class DagTotaal {
     private LocalDate datum;
@@ -25,5 +26,13 @@ public class DagTotaal {
 
     public void setSeconden(int seconden) {
         this.seconden = seconden;
+    }
+
+    public static void setDagTotaal(List<DagTotaal> dagTotalen, LocalDate datum, int seconden) {
+        for (DagTotaal dagTotaal : dagTotalen) {
+            if (dagTotaal.getDatum().equals(datum)) {
+                dagTotaal.setSeconden(seconden);
+            }
+        }
     }
 }

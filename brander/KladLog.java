@@ -17,8 +17,10 @@ public class KladLog {
 
     public static void main(String[] args) {
         System.out.println("KLAD");
-        List<DagTotaal> dagTotalen = new BranderLogger(Brander.logFileName).dagTotalen();
-
+        List<DagTotaal> dagTotalen = new BranderLogger("C:\\Users\\erikv\\Downloads\\BranderLog.txt").dagTotalen(5);
+        for (DagTotaal dagTotaal : dagTotalen) {
+            System.out.println(dagTotaal.getDatum().toString() + " >> " + dagTotaal.getSeconden());
+        }
     }
 
 

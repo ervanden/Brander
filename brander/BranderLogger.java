@@ -26,8 +26,20 @@ public class BranderLogger {
         }
     }
 
-    public static List<DagTotaal> dagTotalen() {
+    public static List<DagTotaal> dagTotalen(int laatsteZoveelDagen) {
+        // maak een lijst met de gevraagde dagen
         List<DagTotaal> dagTotalen = new ArrayList<>();
+        LocalDate vandaag = LocalDate.now();
+        LocalDate dag = vandaag.minusDays(laatsteZoveelDagen - 1);
+        while (!dag.equals(vandaag)) {
+            System.out.println("adding tot dagtotalen " + dag.toString());
+            dagTotalen.add(new DagTotaal(dag, 0));
+            dag = dag.plusDays(1);
+        }
+        System.out.println("adding tot dagtotalen " + vandaag.toString());
+        dagTotalen.add(new DagTotaal(vandaag, 0));
+
+        // lees de log file en vul de waarde voor deze dagen in de lijst dagTotalen
         try {
             System.out.println("Opening " + fileNaam);
             File file = new File(fileNaam);
@@ -45,13 +57,14 @@ public class BranderLogger {
                     String secondsString = words[1];
                     LocalDate date = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
                     Integer seconds = Integer.parseInt(secondsString);
-                    if (sumDate == null) sumDate = date;
+                    if (sumDate == null) {
+                        sumDate = date;
+                    }
                     if (date.equals(sumDate)) {
                         sumSeconds = sumSeconds + seconds;
                     } else {
                         System.out.println("Total on " + sumDate + " seconds=" + sumSeconds);
-                        DagTotaal dagTotaal = new DagTotaal(sumDate, sumSeconds);
-                        dagTotalen.add(dagTotaal);
+                        DagTotaal.setDagTotaal(dagTotalen, sumDate, sumSeconds);
                         sumDate = date;
                         sumSeconds = seconds;
                     }
@@ -59,15 +72,16 @@ public class BranderLogger {
                 }
             }
             System.out.println("Total on " + sumDate + " seconds=" + sumSeconds);
-            DagTotaal dagTotaal = new DagTotaal(sumDate, sumSeconds);
-            dagTotalen.add(dagTotaal);
-
+            DagTotaal.setDagTotaal(dagTotalen, sumDate, sumSeconds);
             inputStream.close();
         } catch (FileNotFoundException fnf) {
             System.out.println("file not found");
         } catch (IOException io) {
             System.out.println("io exception");
+        } catch (IllegalArgumentException io) {
+            System.out.println("niet alle datums in de log file zijn <= vandaag");
         }
+
         return dagTotalen;
     }
 }
