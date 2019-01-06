@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ServerEngineProtocol implements WSServerListener {
@@ -69,15 +70,26 @@ public class ServerEngineProtocol implements WSServerListener {
             }
         }
         if (cmd.command.equals("data")) {
-            String aantalDagenString = cmd.arg1;
             WebCommand webCommand = new WebCommand();
             webCommand.command = "data";
             webCommand.arg1 = "start";
             reply.add(webCommand.toJSON());
-            webCommand.command = "data";
-            webCommand.arg1 = "datum1";
-            webCommand.arg2 = "seconden";
-            reply.add(webCommand.toJSON());
+
+            String aantalDagenString = cmd.arg1;
+            int aantalDagen = Integer.parseInt(aantalDagenString);
+            List<DagTotaal> dagTotalen = serverEngine.logger.dagTotalen();
+            Collections.reverse(dagTotalen); // meest recente eerst
+            int dag = 0;
+            for (DagTotaal dagTotaal : dagTotalen) {
+                dag++;
+                if (dag <= aantalDagen) {
+                    webCommand.command = "data";
+                    webCommand.arg1 = dagTotaal.getDatum().toString();
+                    webCommand.arg2 = ((Integer) dagTotaal.getSeconden()).toString();
+                    reply.add(webCommand.toJSON());
+                }
+            }
+
             webCommand.command = "data";
             webCommand.arg1 = "end";
             reply.add(webCommand.toJSON());

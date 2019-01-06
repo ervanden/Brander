@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BranderLogger {
 
-    String fileNaam;
+    static String fileNaam;
 
     public BranderLogger(String fileNaam) {
         this.fileNaam = fileNaam;
@@ -26,11 +26,11 @@ public class BranderLogger {
         }
     }
 
-    public static List<DagTotaal> dagTotalen(String fileName) {
+    public static List<DagTotaal> dagTotalen() {
         List<DagTotaal> dagTotalen = new ArrayList<>();
         try {
-            System.out.println("Opening " + fileName);
-            File file = new File(fileName);
+            System.out.println("Opening " + fileNaam);
+            File file = new File(fileNaam);
             InputStream is = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(is, "UTF-8");
             BufferedReader inputStream = new BufferedReader(isr);
