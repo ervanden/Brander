@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,11 +81,12 @@ public class ServerEngineProtocol implements WSServerListener {
             List<DagTotaal> dagTotalen = serverEngine.logger.dagTotalen(aantalDagen);
             Collections.reverse(dagTotalen); // meest recente eerst
             int dag = 0;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM");
             for (DagTotaal dagTotaal : dagTotalen) {
                 dag++;
                 if (dag <= aantalDagen) {
                     webCommand.command = "data";
-                    webCommand.arg1 = dagTotaal.getDatum().toString();
+                    webCommand.arg1 = dagTotaal.getDatum().format(formatter);
                     webCommand.arg2 = ((Integer) dagTotaal.getSeconden()).toString();
                     reply.add(webCommand.toJSON());
                 }
