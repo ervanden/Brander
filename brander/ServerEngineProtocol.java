@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,8 @@ public class ServerEngineProtocol implements WSServerListener {
 
     private ServerEngine serverEngine;
     private IntervalLijst newIntervals;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM");
+
 
     ServerEngineProtocol(ServerEngine serverEngine) {
         this.serverEngine = serverEngine;
@@ -27,6 +30,7 @@ public class ServerEngineProtocol implements WSServerListener {
         cmd = (WebCommand) jsonStringToObject(request, WebCommand.class);
         System.out.println(cmd.toString());
 
+        // client vraagt om ON en HEATING status door te sturen
         if (cmd.command.equals("getStatus")) {
             WebCommand webCommand = new WebCommand();
             webCommand.command = "status";
@@ -45,6 +49,7 @@ public class ServerEngineProtocol implements WSServerListener {
             }
             reply.add(webCommand.toJSON());
         }
+        // client vraagt de schedule
         if (cmd.command.equals("getSchedule")) {
             for (Interval interval : serverEngine.intervalLijst.getIntervals()) {
                 if (!interval.isVoorbij()) {
@@ -54,6 +59,7 @@ public class ServerEngineProtocol implements WSServerListener {
                 }
             }
         }
+        // client stuurt een ge-update schedule door
         if (cmd.command.equals("putSchedule")) {
             if (cmd.arg1.equals("reset")) {
                 newIntervals = new IntervalLijst();
@@ -70,6 +76,7 @@ public class ServerEngineProtocol implements WSServerListener {
                 newIntervals.add(cmd.toInterval());
             }
         }
+        // client vraagt om minuten HEATING voor de laatste 'arg1' dagen door te sturen
         if (cmd.command.equals("data")) {
             WebCommand webCommand = new WebCommand();
             webCommand.command = "data";
@@ -81,7 +88,6 @@ public class ServerEngineProtocol implements WSServerListener {
             List<DagTotaal> dagTotalen = serverEngine.logger.dagTotalen(aantalDagen);
             Collections.reverse(dagTotalen); // meest recente eerst
             int dag = 0;
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM");
             for (DagTotaal dagTotaal : dagTotalen) {
                 dag++;
                 if (dag <= aantalDagen) {
@@ -91,6 +97,33 @@ public class ServerEngineProtocol implements WSServerListener {
                     reply.add(webCommand.toJSON());
                 }
             }
+
+            webCommand.command = "data";
+            webCommand.arg1 = "end";
+            reply.add(webCommand.toJSON());
+        }
+        // client vraagt om minuten HEATING voor een bepaalde dag door te sturen
+        if (cmd.command.equals("data2")) {
+            WebCommand webCommand = new WebCommand();
+            webCommand.command = "data2";
+            webCommand.arg1 = "start";
+            reply.add(webCommand.toJSON());
+
+            String datumString = cmd.arg1;
+            LocalDate datum = LocalDate.parse(datumString, formatter);
+            List<MinuutStatus> l = serverEngine.logger.statusPerMinuut(datum);
+//            Collections.reverse(dagTotalen); // meest recente eerst
+//            int dag = 0;
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM");
+//            for (DagTotaal dagTotaal : dagTotalen) {
+//                dag++;
+//                if (dag <= aantalDagen) {
+//                    webCommand.command = "data";
+//                    webCommand.arg1 = dagTotaal.getDatum().format(formatter);
+//                    webCommand.arg2 = ((Integer) dagTotaal.getSeconden()).toString();
+//                    reply.add(webCommand.toJSON());
+//                }
+//            }
 
             webCommand.command = "data";
             webCommand.arg1 = "end";

@@ -17,10 +17,12 @@ public class KladLog {
 
     public static void main(String[] args) {
         System.out.println("KLAD");
-        List<DagTotaal> dagTotalen = new BranderLogger("C:\\Users\\erikv\\Downloads\\BranderLog.txt").dagTotalen(5);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM");
-        for (DagTotaal dagTotaal : dagTotalen) {
-            System.out.println(dagTotaal.getDatum().format(formatter) + " >> " + dagTotaal.getSeconden());
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM/yyyy");
+        LocalDate datum = LocalDate.parse("Sat 05/01/2019", formatter);
+
+        List<MinuutStatus> l = new BranderLogger("C:\\Users\\erikv\\Downloads\\BranderLog.txt").statusPerMinuut(datum);
+        for (MinuutStatus minuutStatus : l) {
+            System.out.println(minuutStatus.getUur() + ":" + minuutStatus.getMinuut() + " " + minuutStatus.isStatus());
         }
     }
 
