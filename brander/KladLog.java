@@ -18,9 +18,9 @@ public class KladLog {
     public static void main(String[] args) {
         System.out.println("KLAD");
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM/yyyy");
-        LocalDate datum = LocalDate.parse("Sat 05/01/2019", formatter);
+        LocalDate datum = LocalDate.parse("Fri 04/01/2019", formatter);
 
-        List<MinuutStatus> l = new BranderLogger("C:\\Users\\erikv\\Downloads\\BranderLog.txt").statusPerMinuut(datum);
+        List<MinuutStatus> l = new BranderLogger("C:\\Users\\erikv\\Downloads\\BranderLog.txt").statusPerMinuut(datum, 10);
         for (MinuutStatus minuutStatus : l) {
             System.out.println(minuutStatus.getUur() + ":" + minuutStatus.getMinuut() + " " + minuutStatus.isStatus());
         }

@@ -26,7 +26,7 @@ public class BranderLogger {
         }
     }
 
-    public static List<MinuutStatus> statusPerMinuut(LocalDate datum) {
+    public static List<MinuutStatus> statusPerMinuut(LocalDate datum, int minutenVoorEnNa) {
         List<MinuutStatus> MinuutStatusLijst = new ArrayList<>();
         // de array 'minuten' houdt de status bij van elke minuut op 'datum'
         // 13:44 komt overeen met minuten[13*60+44]  uren gaan van 0-23 minuten van 0-59
@@ -65,12 +65,33 @@ public class BranderLogger {
                 }
             }
 
+            // bepaal eersteIndex = minutenVoorEnNa minuten voor de eerste ON minuut
+            // bepaal laatsteIndex = minutenVoorEnNa minuten na de laatste ON minuut
+            int laatsteIndex = 0;
+            int eersteIndex = 23 * 60 + 59;
             for (int uur = 0; uur < 24; uur++) {
                 for (int minuut = 0; minuut < 60; minuut++) {
-                    MinuutStatusLijst.add(new MinuutStatus(uur, minuut, minuten[uur * 60 + minuut]));
+                    int index = uur * 60 + minuut;
+                    if (minuten[index]) {
+                        laatsteIndex = index + minutenVoorEnNa;
+                        if (eersteIndex == 23 * 60 + 59) eersteIndex = index - minutenVoorEnNa;
+                        //                    System.out.println(uur + ":" + minuut + "  " + eersteIndex + "-" + laatsteIndex);
+                    }
                 }
             }
-
+            if (eersteIndex < 0) eersteIndex = 0;
+            if (laatsteIndex > (23 * 60 + 59)) laatsteIndex = (23 * 60 + 59);
+            if (eersteIndex < laatsteIndex) {
+                for (int uur = 0; uur < 24; uur++) {
+                    for (int minuut = 0; minuut < 60; minuut++) {
+                        int index = uur * 60 + minuut;
+                        if (index >= eersteIndex && index <= laatsteIndex) {
+                            //                          System.out.println(uur + ":" + minuut + "  index=" + index + " "+minuten[index]);
+                            MinuutStatusLijst.add(new MinuutStatus(uur, minuut, minuten[index]));
+                        }
+                    }
+                }
+            }
             inputStream.close();
         } catch (FileNotFoundException fnf) {
             System.out.println("file not found");

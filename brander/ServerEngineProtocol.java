@@ -16,7 +16,7 @@ public class ServerEngineProtocol implements WSServerListener {
 
     private ServerEngine serverEngine;
     private IntervalLijst newIntervals;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM/yyyy");
 
 
     ServerEngineProtocol(ServerEngine serverEngine) {
@@ -102,30 +102,25 @@ public class ServerEngineProtocol implements WSServerListener {
             webCommand.arg1 = "end";
             reply.add(webCommand.toJSON());
         }
-        // client vraagt om minuten HEATING voor een bepaalde dag door te sturen
+        // client vraagt om minuten HEATING voor een bepaalde dag (arg1) door te sturen
         if (cmd.command.equals("data2")) {
+            String datumString = cmd.arg1;
             WebCommand webCommand = new WebCommand();
             webCommand.command = "data2";
             webCommand.arg1 = "start";
             reply.add(webCommand.toJSON());
 
-            String datumString = cmd.arg1;
             LocalDate datum = LocalDate.parse(datumString, formatter);
-            List<MinuutStatus> l = serverEngine.logger.statusPerMinuut(datum);
-//            Collections.reverse(dagTotalen); // meest recente eerst
-//            int dag = 0;
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E dd/MM");
-//            for (DagTotaal dagTotaal : dagTotalen) {
-//                dag++;
-//                if (dag <= aantalDagen) {
-//                    webCommand.command = "data";
-//                    webCommand.arg1 = dagTotaal.getDatum().format(formatter);
-//                    webCommand.arg2 = ((Integer) dagTotaal.getSeconden()).toString();
-//                    reply.add(webCommand.toJSON());
-//                }
-//            }
-
-            webCommand.command = "data";
+            List<MinuutStatus> l = serverEngine.logger.statusPerMinuut(datum, 10);
+            for (MinuutStatus minuutStatus : l) {
+                webCommand.command = "data2";
+                int uur = minuutStatus.getUur();
+                int minuut = minuutStatus.getMinuut();
+                webCommand.arg1 = ((uur < 10) ? "0" : "") + uur + ":" + ((minuut < 10) ? "0" : "") + minuut;
+                webCommand.arg2 = minuutStatus.isStatus() ? "1" : "0";
+                reply.add(webCommand.toJSON());
+            }
+            webCommand.command = "data2";
             webCommand.arg1 = "end";
             reply.add(webCommand.toJSON());
         }

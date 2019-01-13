@@ -9,8 +9,6 @@ public class TijdsInterval {
     public TijdsInterval() {
     }
 
-    ;
-
     public TijdsInterval(int vanUur,
                          int vanMinuut,
                          int totUur,
