@@ -68,8 +68,9 @@ public class ServerEngine {
         logger = new BranderLogger(Brander.logFileName);
 
         readJSONFile(Brander.scheduleFileName);
+        System.out.println("schedule uit " + Brander.scheduleFileName + " :");
         for (Interval interval : intervalLijst.getIntervals()) {
-            System.out.println("schedule bij start=" + interval.toString());
+            System.out.println(" " + interval.toString());
         }
         serverEngineThread = new ServerEngineThread();
         serverEngineThread.start();
