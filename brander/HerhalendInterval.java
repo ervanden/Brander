@@ -1,10 +1,7 @@
 package brander;
 
-
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class HerhalendInterval extends Interval {
 

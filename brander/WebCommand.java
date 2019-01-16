@@ -15,7 +15,6 @@ public class WebCommand {
     public Integer totmin;
 
     public WebCommand() {
-
     }
 
     public WebCommand(Interval interval) {

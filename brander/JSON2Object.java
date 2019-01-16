@@ -14,12 +14,6 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
-import java.util.List;
 
 // utility to parse a file that contains JSON objects.
 // readJSONFile() reads the JSON objects and returns a list of java objects.

@@ -108,12 +108,11 @@ public class BranderLogger {
             dagTotalen.add(new DagTotaal(dag, 0));
             dag = dag.plusDays(1);
         }
-        System.out.println("adding tot dagtotalen " + vandaag.toString());
         dagTotalen.add(new DagTotaal(vandaag, 0));
 
         // lees de log file en vul de waarde voor deze dagen in de lijst dagTotalen
+        System.out.println("Opening " + fileNaam);
         try {
-            System.out.println("Opening " + fileNaam);
             File file = new File(fileNaam);
             InputStream is = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(is, "UTF-8");
@@ -135,25 +134,19 @@ public class BranderLogger {
                     if (date.equals(sumDate)) {
                         sumSeconds = sumSeconds + seconds;
                     } else {
-                        System.out.println("Total on " + sumDate + " seconds=" + sumSeconds);
                         DagTotaal.setDagTotaal(dagTotalen, sumDate, sumSeconds);
                         sumDate = date;
                         sumSeconds = seconds;
                     }
-                    System.out.println("On " + date + " seconds=" + seconds);
                 }
             }
-            System.out.println("Total on " + sumDate + " seconds=" + sumSeconds);
             DagTotaal.setDagTotaal(dagTotalen, sumDate, sumSeconds);
             inputStream.close();
         } catch (FileNotFoundException fnf) {
             System.out.println("file not found");
         } catch (IOException io) {
             System.out.println("io exception");
-        } catch (IllegalArgumentException io) {
-            System.out.println("niet alle datums in de log file zijn <= vandaag");
         }
-
         return dagTotalen;
     }
 }

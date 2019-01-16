@@ -1,8 +1,5 @@
 package brander;
 
-import java.time.LocalDate;
-import java.util.List;
-
 public class MinuutStatus {
     private int uur;
     private int minuut;

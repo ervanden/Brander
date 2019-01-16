@@ -10,7 +10,6 @@ public class ServerEngine {
     int port;
     int verbosity;
     boolean active;
-    boolean test;
     WSServer wsServer = null;
     ServerEngineProtocol serverEngineProtocol;
     ServerEngineThread serverEngineThread;
@@ -27,7 +26,6 @@ public class ServerEngine {
         this.port = port;
         this.verbosity = verbosity;
         this.active = active;
-        this.test = test;
     }
 
     public boolean getState() {

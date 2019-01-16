@@ -1,11 +1,6 @@
 package brander;
 
-import com.pi4j.io.gpio.RaspiPin;
-
-import javax.management.monitor.Monitor;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 public class Brander {
 
@@ -47,12 +42,6 @@ public class Brander {
 
             ServerEngine serverEngine = new ServerEngine(server_port, server_verbosity, server_active);
             serverEngine.start();
-
-//            Thread.sleep(1000);
-//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"reset\"}");
-//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"interval\",\"dag\":\"13/12/2018\",\"vanuur\":\"0\",\"vanmin\":\"0\",\"totuur\":\"23\",\"totmin\":\"59\"}");
-//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"dag\":\"SUNDAY\",\"vanuur\":0,\"vanmin\":0,\"totuur\":23,\"totmin\":55,\"command\":\"putSchedule\",\"arg\":\"interval\"}");
-//            serverEngine.serverEngineProtocol.onClientRequest("clientErik", "{\"command\":\"putSchedule\",\"arg\":\"submit\"}");
         } else {
             usage();
         }

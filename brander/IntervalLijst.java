@@ -22,7 +22,6 @@ public class IntervalLijst {
 
     public boolean bevat(LocalDateTime dt) {
         for (Interval interval : intervals) {
-            //           System.out.println("BEVAT? "+interval.toString()+" "+dt.toString()+ " = " +interval.bevat(dt));
             if (interval.bevat(dt)) return true;
         }
         return false;
