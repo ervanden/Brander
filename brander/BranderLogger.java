@@ -52,7 +52,6 @@ public class BranderLogger {
                     LocalDateTime dt = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME);
                     LocalDate d = dt.toLocalDate();
                     if (d.equals(datum)) {
-                        System.out.println("On " + dt + " seconds=" + seconds);
                         int uur = dt.getHour();
                         int minuut = dt.getMinute();
                         int index = uur * 60 + minuut;
@@ -75,7 +74,6 @@ public class BranderLogger {
                     if (minuten[index]) {
                         laatsteIndex = index + minutenVoorEnNa;
                         if (eersteIndex == 23 * 60 + 59) eersteIndex = index - minutenVoorEnNa;
-                        //                    System.out.println(uur + ":" + minuut + "  " + eersteIndex + "-" + laatsteIndex);
                     }
                 }
             }
@@ -86,7 +84,6 @@ public class BranderLogger {
                     for (int minuut = 0; minuut < 60; minuut++) {
                         int index = uur * 60 + minuut;
                         if (index >= eersteIndex && index <= laatsteIndex) {
-                            //                          System.out.println(uur + ":" + minuut + "  index=" + index + " "+minuten[index]);
                             MinuutStatusLijst.add(new MinuutStatus(uur, minuut, minuten[index]));
                         }
                     }
@@ -108,7 +105,6 @@ public class BranderLogger {
         LocalDate vandaag = LocalDate.now();
         LocalDate dag = vandaag.minusDays(laatsteZoveelDagen - 1);
         while (!dag.equals(vandaag)) {
-            System.out.println("adding tot dagtotalen " + dag.toString());
             dagTotalen.add(new DagTotaal(dag, 0));
             dag = dag.plusDays(1);
         }

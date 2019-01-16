@@ -57,7 +57,6 @@ public class MonitorThread extends Thread {
         final int SLEEPSEC = 1;
         try {
             while (true) {
-                System.out.println("MONITOR LOG stable=" + stable + " isLow()=" + branderSensor.isLow() + " ONTIME=" + millisOn.intValue() / 1000);
                 if (stable) { // geen transities in de laatste SLEEPSEC seconden
                     if (branderSensor.isLow()) { // de brander is al minstens SLEEPTIME seconden stabiel OFF
                         if (heatingState == true) {
