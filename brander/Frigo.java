@@ -30,8 +30,18 @@ public class Frigo {
                         System.out.println("null");
                     else {
                         System.out.println(temperature);
-                        if (temperature < 5) gpio3.setState(false);
-                        if (temperature > 10) {
+                        if (temperature > 20) {
+                            gpio3.setState(false);
+                            Thread.sleep(300);
+                            gpio3.setState(true);
+                            Thread.sleep(300);
+                            gpio3.setState(false);
+                            Thread.sleep(300);
+                            gpio3.setState(true);
+                            Thread.sleep(300);
+                            gpio3.setState(false);
+                        }
+                        if (temperature < 18) {
                             gpio3.setState(true);
                             Thread.sleep(300);
                             gpio3.setState(false);
