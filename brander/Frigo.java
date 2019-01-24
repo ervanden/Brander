@@ -28,9 +28,8 @@ public class Frigo {
                     else
                         System.out.println(temperature);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+                Thread.sleep(5000);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
