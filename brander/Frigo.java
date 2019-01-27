@@ -9,6 +9,8 @@ public class Frigo {
 
 
     public static void main(String[] args) {
+        final int MINTEMP = 6;
+        final int MAXTEMP = 8;
         GpioController gpio = GpioFactory.getInstance();
         GpioPinDigitalOutput gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "compressor", PinState.LOW);
         while (true) {
@@ -30,16 +32,18 @@ public class Frigo {
                     if (temperature == null)
                         System.out.println("null");
                     else {
-                        System.out.println(temperature);
-                        if (temperature > 8) {
+                        System.out.println(temperature + " grenzen: " + MINTEMP + "-" + MAXTEMP);
+                        if (temperature > MAXTEMP) {
                             gpio3.setState(true);
                             System.out.println("SWITCHED ON");
                         }
-                        if (temperature < 6) {
+                        if (temperature < MINTEMP) {
                             gpio3.setState(false);
                             System.out.println("SWITCHED OFF");
                         }
                     }
+                } else {
+                    System.out.println("python /home/pi/dht22temp.py exit value : " + exitVal);
                 }
                 Thread.sleep(5000);
             } catch (Exception e) {
