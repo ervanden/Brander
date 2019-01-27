@@ -33,6 +33,7 @@ public class GPIOTest {
         try {
             while (true) {
                 gpio3.setState(true);
+
                 Thread.sleep(SLEEPSEC * 1000);
                 gpio3.setState(false);
                 Thread.sleep(SLEEPSEC * 1000);
