@@ -31,7 +31,7 @@ public class Frigo {
                         System.out.println("null");
                     else {
                         System.out.println(temperature);
-                        if (temperature > 10) {
+                        if (temperature > 8) {
                             gpio3.setState(true);
                             System.out.println("SWITCHED ON");
                         }
