@@ -9,8 +9,8 @@ public class Frigo {
 
 
     public static void main(String[] args) {
-        final int MINTEMP = 6;
-        final int MAXTEMP = 8;
+        final int MINTEMP = 8;
+        final int MAXTEMP = 9;
         GpioController gpio = GpioFactory.getInstance();
         GpioPinDigitalOutput gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "compressor", PinState.LOW);
         while (true) {
