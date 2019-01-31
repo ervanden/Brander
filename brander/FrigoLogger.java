@@ -15,11 +15,11 @@ public class FrigoLogger {
         this.fileNaam = fileNaam;
     }
 
-    public void log(LocalDateTime timeStamp, String message) {
+    public void log(String message) {
         try {
             FileWriter fw = new FileWriter(fileNaam, true);
             BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(timeStamp.toString() + "|" + message);
+            bw.write(LocalDateTime.now() + "|" + message);
             bw.newLine();
             bw.close();
         } catch (IOException e) {
