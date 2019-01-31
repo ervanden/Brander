@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class Frigo {
 
-    static boolean STATE = false;
+    static boolean STATE;
     static FrigoLogger logger;
     static GpioController gpio = GpioFactory.getInstance();
     static GpioPinDigitalOutput gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "compressor", PinState.LOW);
@@ -33,6 +33,8 @@ public class Frigo {
         final int MINTEMP = 6;
         final int MAXTEMP = 8;
         logger = new FrigoLogger("/home/pi/Frigo.log");
+        STATE = false;
+        gpio3.setState(false);
         while (true) {
             try {
                 Process process = Runtime.getRuntime().exec("python /home/pi/dht22temp.py");
@@ -52,7 +54,9 @@ public class Frigo {
                     if (temperature == null)
                         System.out.println("null");
                     else {
-                        System.out.println(temperature + " grenzen: " + MINTEMP + "-" + MAXTEMP);
+                        System.out.println(temperature + " grenzen: " + MINTEMP + "-" + MAXTEMP
+                                + "   state=" + STATE
+                                + "  compressor=" + gpio3.isHigh());
                         if (temperature >= MAXTEMP) {
                             changeState(true);
                         }
