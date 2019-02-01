@@ -6,27 +6,51 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 
+import static java.lang.System.currentTimeMillis;
+
 
 public class Frigo {
 
     static boolean STATE;
+    static long lastOn;
+    static long lastOff;
     static FrigoLogger logger;
     static GpioController gpio = GpioFactory.getInstance();
     static GpioPinDigitalOutput gpio6 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "compressor", PinState.LOW);
     static GpioPinDigitalOutput gpio5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "dht22", PinState.LOW);
+
+    static String printTimeInMillis(long t) {
+        if (t > 24 * 3600 * 1000) {
+            return "-";
+        } else {
+            Long deltaSeconds = t / 1000;
+            int totalSeconds = deltaSeconds.intValue();
+            int totalMinutes = totalSeconds / 60;  // aantal volledige minuten
+            int sec = totalSeconds % 60;
+            int totalHours = totalMinutes / 60; // aantal volledige uren
+            int min = totalMinutes % 60;
+            String hourString = (totalHours > 0) ? (totalHours + "h") : "";
+            String minuteString = min + "m";
+            String secondString = sec + "s";
+            return hourString + minuteString + secondString;
+        }
+    }
 
     static void changeState(boolean b) {
         if (b && !STATE) {
             STATE = true;
             gpio6.setState(true);
             System.out.println("SWITCHED ON");
-            logger.log("ON");
+            lastOn = System.currentTimeMillis();
+            logger.log(printTimeInMillis(lastOn - lastOff) + " > ON");
         }
         if (!b && STATE) {
             STATE = false;
             gpio6.setState(false);
             System.out.println("SWITCHED OFF");
             logger.log("OFF");
+            lastOff = System.currentTimeMillis();
+            logger.log(printTimeInMillis(lastOff - lastOn) + " > OFF");
         }
     }
 
