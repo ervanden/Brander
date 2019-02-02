@@ -68,6 +68,8 @@ public class Frigo {
         }
 
         logger = new FrigoLogger("/home/pi/Frigo.log");
+        logger.log("PROGRAM RESTART  min=" + MINTEMP + " max=" + MAXTEMP + " polling=" + POLLING);
+
         // compressor uit tot de temperatuur te hoog wordt
         STATE = false;
         gpio6.setState(false);
