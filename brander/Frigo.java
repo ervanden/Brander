@@ -4,9 +4,7 @@ import com.pi4j.io.gpio.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.time.LocalDateTime;
-
-import static java.lang.System.currentTimeMillis;
+import java.util.Date;
 
 
 public class Frigo {
@@ -48,15 +46,27 @@ public class Frigo {
             STATE = false;
             gpio6.setState(false);
             System.out.println("SWITCHED OFF");
-            logger.log("OFF");
             lastOff = System.currentTimeMillis();
             logger.log(printTimeInMillis(lastOff - lastOn) + " > OFF");
         }
     }
 
     public static void main(String[] args) {
-        final int MINTEMP = 6;
-        final int MAXTEMP = 8;
+        int MINTEMP = 6; // temperatuur waarbij de compressor aangezet wordt
+        int MAXTEMP = 8; // temperatuur waarbij de compressor afgezet wordt
+        int POLLING = 20; // om de hoeveel seconden wordt de temperatuur gemeten
+
+        for (int arg = 1; arg <= args.length; arg++) {
+            String[] s = args[arg - 1].split("=");
+            if (s[0].equals("min")) {
+                MINTEMP = Integer.parseInt(s[1]);
+            } else if (s[0].equals("max")) {
+                MAXTEMP = Integer.parseInt(s[1]);
+            } else if (s[0].equals("polling")) {
+                POLLING = Integer.parseInt(s[1]);
+            }
+        }
+
         logger = new FrigoLogger("/home/pi/Frigo.log");
         // compressor uit tot de temperatuur te hoog wordt
         STATE = false;
@@ -98,13 +108,13 @@ public class Frigo {
                 } else {
                     System.out.println("python /home/pi/dht22temp.py exit value : " + exitVal);
                     logger.log("RESET DHT22");
-                    // we zetten de dht even af om hem te resetten
+                    // we resetten de dht door hem even af en aan te zetten
                     gpio5.setState(true);
                     Thread.sleep(5000);
                     gpio5.setState(false);
                 }
 
-                Thread.sleep(10000);
+                Thread.sleep(POLLING * 1000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
