@@ -52,8 +52,8 @@ public class Frigo {
     }
 
     public static void main(String[] args) {
-        int MINTEMP = 6; // temperatuur waarbij de compressor aangezet wordt
-        int MAXTEMP = 8; // temperatuur waarbij de compressor afgezet wordt
+        int MINTEMP = 6; // temperatuur waarbij de compressor afgezet wordt
+        int MAXTEMP = 8; // temperatuur waarbij de compressor aangezet wordt
         int POLLING = 20; // om de hoeveel seconden wordt de temperatuur gemeten
 
         for (int arg = 1; arg <= args.length; arg++) {
