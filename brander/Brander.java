@@ -2,7 +2,7 @@ package brander;
 
 import java.util.Date;
 
-public class Brander {
+public class Brander { // commit test
 
     static int server_verbosity;
     static boolean server_active;
