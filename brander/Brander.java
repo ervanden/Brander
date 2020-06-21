@@ -2,7 +2,7 @@ package brander;
 
 import java.util.Date;
 
-public class Brander { // commit 27 nov 2019
+public class Brander { // commit 21 juni
 
     static int server_verbosity;
     static boolean server_active;
